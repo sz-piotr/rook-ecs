@@ -1,6 +1,7 @@
 {
   "name": "ouyo",
   "description": "An Entity-Component-System library built for ease of use and code readability",
+  "author": "Piotr Szlachciak <szlachciak.piotr@gmail.com>",
   "keywords": [
     "ecs",
     "entity",
@@ -9,6 +10,11 @@
   ],
   "license": "MIT",
   "version": "0.1.0",
+  "main": "lib/ouyo.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/sz-piotr/ouyo.git"
+  },
   "scripts": {
     "start": "webpack --watch --progress",
     "build": "webpack -p --progress",

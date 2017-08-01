@@ -8,7 +8,7 @@ const config = {
   entry: './src/main.js',
   devtool: 'source-map',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'lib'),
     filename: package.name + '.js',
     library: package.name.toUpperCase(),
     libraryTarget: "umd",
