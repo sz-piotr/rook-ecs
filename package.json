@@ -1,0 +1,24 @@
+{
+  "name": "ouyo",
+  "description": "An Entity-Component-System library built for ease of use and code readability",
+  "keywords": [
+    "ecs",
+    "entity",
+    "component",
+    "system"
+  ],
+  "license": "MIT",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "webpack --watch --progress",
+    "build": "webpack -p --progress",
+    "examples": "http-server -o -a localhost -i"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "http-server": "^0.10.0",
+    "webpack": "^3.4.1"
+  }
+}
