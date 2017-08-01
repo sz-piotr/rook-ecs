@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "webpack --watch --progress",
+    "prepublish": "npm run build",
     "build": "webpack -p --progress",
     "examples": "http-server -o -a localhost -i"
   },
