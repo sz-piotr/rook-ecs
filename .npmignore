@@ -1,3 +1,4 @@
 src/
 .editorconfig
+.babelrc
 webpack.config.js
