@@ -20,7 +20,8 @@
     "prepublishOnly": "npm run build",
     "build": "webpack -p --progress",
     "examples": "http-server -o -a localhost -i",
-    "test": "jest"
+    "test": "jest",
+    "testwatch": "jest --watchAll"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
