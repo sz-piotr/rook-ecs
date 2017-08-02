@@ -1,7 +1,7 @@
 import { createComponent, __test__resetIndex } from './component'
 
 beforeEach(() => {
-  __test__resetIndex();
+  __test__resetIndex()
 });
 
 describe('createComponent', () => {

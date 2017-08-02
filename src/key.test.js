@@ -2,12 +2,10 @@ import { Key } from './key'
 
 describe('Key', () => {
   test('#constructor() should construct an object', () => {
-    expect(
-      () => {
-        new Key()
-        new Key([1, 2, 3])
-      }
-    ).not.toThrow()
+    expect(() => {
+      new Key()
+      new Key([1, 2, 3])
+    }).not.toThrow()
   })
 
   test('should match itself', () => {
