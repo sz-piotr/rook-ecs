@@ -12,20 +12,25 @@
   "version": "0.1.0",
   "main": "lib/ouyo.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/sz-piotr/ouyo.git"
+    "type": "git",
+    "url": "https://github.com/sz-piotr/ouyo.git"
   },
   "scripts": {
     "start": "webpack --watch --progress",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "build": "webpack -p --progress",
-    "examples": "http-server -o -a localhost -i"
+    "examples": "http-server -o -a localhost -i",
+    "test": "jest"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
     "http-server": "^0.10.0",
+    "jest": "^20.0.4",
     "webpack": "^3.4.1"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js"]
   }
 }
