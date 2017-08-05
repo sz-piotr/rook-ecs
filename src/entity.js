@@ -12,8 +12,8 @@ export class Entity {
     this.announceDirty = announceDirty
   }
 
-  addComponent(component) {
-    const index = component.__proto__.constructor.index
+  add(component) {
+    const index = getComponentIndexFromInstance(component)
     if(!this.components[index]) {
       this.setDirty(true)
     }
@@ -22,7 +22,20 @@ export class Entity {
     return this
   }
 
-  removeComponent(componentClass) {
+  get(componentClass) {
+    if(!isComponentClass(componentClass)) {
+      throw new Error('Entity.get(): Argument is not a component class')
+    }
+
+    const component = this.components[componentClass.index]
+    if(!component) {
+      throw new Error('Entity.get(): Requested component is not present')
+    }
+
+    return component
+  }
+
+  remove(componentClass) {
     const index = componentClass.index
     if(this.components[index]) {
       this.setDirty(true)
@@ -32,14 +45,22 @@ export class Entity {
     return this
   }
 
-  matches(key) {
-    return this.key.matches(key)
-  }
-
   setDirty(value) {
     if(!this.dirty && value) {
       this.announceDirty(this)
     }
     this.dirty = value
   }
+}
+
+function getComponentIndexFromInstance(component) {
+  const componentClass = component ? component.__proto__.constructor : null
+  if(!component || !isComponentClass(componentClass)) {
+    throw new Error('Entity.add(): Argument is not a component instance')
+  }
+  return componentClass.index
+}
+
+function isComponentClass(value) {
+  return value && value.index !== undefined
 }

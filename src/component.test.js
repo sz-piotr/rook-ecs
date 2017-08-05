@@ -1,16 +1,16 @@
-import { createComponent, __test__resetIndex } from './component'
+import { component, __test__resetIndex } from './component'
 
 beforeEach(() => {
   __test__resetIndex()
 });
 
-describe('createComponent', () => {
+describe('component', () => {
   test('should not modify the argument', () => {
     function Undecorated(a, b) {
       this.a = a
       this.b = b
     }
-    const Decorated = createComponent(Undecorated)
+    const Decorated = component(Undecorated)
 
     expect(Decorated).not.toBe(Undecorated)
   })
@@ -20,7 +20,7 @@ describe('createComponent', () => {
       this.a = a
       this.b = b
     }
-    const Decorated = createComponent(Undecorated)
+    const Decorated = component(Undecorated)
 
     expect(new Decorated(1, 2)).toEqual({ a: 1, b: 2 })
   })
@@ -30,8 +30,8 @@ describe('createComponent', () => {
       this.a = a
       this.b = b
     }
-    const DecoratedA = createComponent(Undecorated)
-    const DecoratedB = createComponent(Undecorated)
+    const DecoratedA = component(Undecorated)
+    const DecoratedB = component(Undecorated)
 
     expect(DecoratedA).not.toBe(DecoratedB)
   })
@@ -41,9 +41,9 @@ describe('createComponent', () => {
       this.a = a
       this.b = b
     }
-    const DecoratedA = createComponent(Undecorated)
-    const DecoratedB = createComponent(Undecorated)
-    const DecoratedC = createComponent(Undecorated)
+    const DecoratedA = component(Undecorated)
+    const DecoratedB = component(Undecorated)
+    const DecoratedC = component(Undecorated)
 
     expect(DecoratedA.index).toBe(0)
     expect(DecoratedB.index).toBe(1)

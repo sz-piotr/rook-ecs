@@ -1,6 +1,6 @@
 let index = 0
 
-export function createComponent(componentConstructor) {
+export function component(componentConstructor) {
   const Component = function() {
     componentConstructor.apply(this, arguments)
   }
