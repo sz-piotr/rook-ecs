@@ -5,7 +5,7 @@ const package = require('./package')
 const isProduction = process.env.npm_lifecycle_event === 'build'
 
 const config = {
-  entry: './src/main.js',
+  entry: './src/index.js',
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'lib'),
