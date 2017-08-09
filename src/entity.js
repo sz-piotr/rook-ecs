@@ -8,8 +8,10 @@ export class Entity {
     this.components = []
     this.key = new Key()
 
-    this.dirty = false
+    this.dirty = true
     this.announceDirty = announceDirty
+
+    this.announceDirty(this)
   }
 
   add(component) {

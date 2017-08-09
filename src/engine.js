@@ -4,6 +4,7 @@ export class Engine {
   constructor() {
     this.entities = null
     this.dirtyEntites = []
+    this.queries = []
 
     this.addToDirty = this.addToDirty.bind(this)
   }
@@ -13,6 +14,10 @@ export class Engine {
     this.entities = entity
 
     return entity
+  }
+
+  addToDirty(entity) {
+    this.dirtyEntites.push(entity)
   }
 
   removeEntity(entity) {
@@ -31,9 +36,5 @@ export class Engine {
     if(this.entities = entity) {
       this.entities = next
     }
-  }
-
-  addToDirty(entity) {
-    this.dirtyEntites.push(entity)
   }
 }
