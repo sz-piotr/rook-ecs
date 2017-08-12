@@ -6,18 +6,24 @@ for(let i = 0; i < KEY_BITS; i++) {
 }
 
 export class Key {
-  constructor(indices = []) {
+  constructor(length) {
     this.values = []
-    for(let i = 0; i < indices.length; i++) {
-      this.setBit(indices[i], true)
+    for(let i = 0; i < length / KEY_BITS; i++) {
+      this.values.push(0)
     }
   }
 
-  setBit(index, value) {
-    while(this.values.length * KEY_BITS <= index) {
-      this.values.push(0)
-    }
+  set(index) {
+    this.setBit(index, true)
+    return this
+  }
 
+  unset(index) {
+    this.setBit(index, false)
+    return this
+  }
+
+  setBit(index, value) {
     let valueIndex = 0
     while(index >= KEY_BITS) {
       valueIndex++

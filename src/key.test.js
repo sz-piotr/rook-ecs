@@ -1,98 +1,105 @@
 import { Key } from './key'
 
+const KEY_TEST_SIZE = 40
+
 describe('Key', () => {
   test('#constructor() should construct an object', () => {
     expect(() => {
-      new Key()
-      new Key([1, 2, 3])
+      new Key(0)
     }).not.toThrow()
   })
 
-  test('should match itself', () => {
-    const keyA = new Key([])
-    const keyB = new Key([1])
-    const keyC = new Key([30])
-    const keyD = new Key([31])
-    const keyE = new Key([1, 30])
-    const keyF = new Key([1, 31])
-    const keyG = new Key([1, 30, 61])
-    const keyH = new Key([1, 30, 62])
-    const keyI = new Key([1, 31, 61])
-    const keyJ = new Key([1, 31, 62])
+  test('should match correctly', () => {
+    let errors = 0
 
-    expect(keyA.matches(keyA)).toBeTruthy()
-    expect(keyB.matches(keyB)).toBeTruthy()
-    expect(keyC.matches(keyC)).toBeTruthy()
-    expect(keyD.matches(keyD)).toBeTruthy()
-    expect(keyE.matches(keyE)).toBeTruthy()
-    expect(keyF.matches(keyF)).toBeTruthy()
-    expect(keyG.matches(keyG)).toBeTruthy()
-    expect(keyH.matches(keyH)).toBeTruthy()
-    expect(keyI.matches(keyI)).toBeTruthy()
-    expect(keyJ.matches(keyJ)).toBeTruthy()
-  })
+    for(let a = 0; a < KEY_TEST_SIZE; a++) {
+      for(let b = a + 1; b < KEY_TEST_SIZE; b++) {
+        for(let c = b + 1; c < KEY_TEST_SIZE; c++) {
 
-  test('should match a subset of itself', () => {
-    const keyA = new Key([1, 31, 62])
-    const keyB = new Key([1, 31])
-    const keyC = new Key([31])
-    const keyD = new Key([1])
-    const keyE = new Key([])
+          const key_none = new Key(KEY_TEST_SIZE)
+          const key_a = new Key(KEY_TEST_SIZE).set(a)
+          const key_b = new Key(KEY_TEST_SIZE).set(b)
+          const key_c = new Key(KEY_TEST_SIZE).set(c)
+          const key_ab = new Key(KEY_TEST_SIZE).set(a).set(b)
+          const key_bc = new Key(KEY_TEST_SIZE).set(b).set(c)
+          const key_ac = new Key(KEY_TEST_SIZE).set(a).set(c)
+          const key_abc = new Key(KEY_TEST_SIZE).set(a).set(b).set(c)
 
-    expect(keyA.matches(keyA)).toBeTruthy()
-    expect(keyA.matches(keyB)).toBeTruthy()
-    expect(keyA.matches(keyC)).toBeTruthy()
-    expect(keyA.matches(keyD)).toBeTruthy()
-    expect(keyA.matches(keyE)).toBeTruthy()
+          errors += !key_none.matches(key_none)
+          errors += key_none.matches(key_a)
+          errors += key_none.matches(key_b)
+          errors += key_none.matches(key_c)
+          errors += key_none.matches(key_ab)
+          errors += key_none.matches(key_bc)
+          errors += key_none.matches(key_ac)
+          errors += key_none.matches(key_abc)
 
-    expect(keyB.matches(keyB)).toBeTruthy()
-    expect(keyB.matches(keyC)).toBeTruthy()
-    expect(keyB.matches(keyD)).toBeTruthy()
-    expect(keyB.matches(keyE)).toBeTruthy()
+          errors += !key_a.matches(key_none)
+          errors += !key_a.matches(key_a)
+          errors += key_a.matches(key_b)
+          errors += key_a.matches(key_c)
+          errors += key_a.matches(key_ab)
+          errors += key_a.matches(key_bc)
+          errors += key_a.matches(key_ac)
+          errors += key_a.matches(key_abc)
 
-    expect(keyC.matches(keyC)).toBeTruthy()
-    expect(keyC.matches(keyE)).toBeTruthy()
+          errors += !key_b.matches(key_none)
+          errors += key_b.matches(key_a)
+          errors += !key_b.matches(key_b)
+          errors += key_b.matches(key_c)
+          errors += key_b.matches(key_ab)
+          errors += key_b.matches(key_bc)
+          errors += key_b.matches(key_ac)
+          errors += key_b.matches(key_abc)
 
-    expect(keyD.matches(keyD)).toBeTruthy()
-    expect(keyD.matches(keyE)).toBeTruthy()
+          errors += !key_c.matches(key_none)
+          errors += key_c.matches(key_a)
+          errors += key_c.matches(key_b)
+          errors += !key_c.matches(key_c)
+          errors += key_c.matches(key_ab)
+          errors += key_c.matches(key_bc)
+          errors += key_c.matches(key_ac)
+          errors += key_c.matches(key_abc)
 
-    expect(keyE.matches(keyE)).toBeTruthy()
-  })
+          errors += !key_ab.matches(key_none)
+          errors += !key_ab.matches(key_a)
+          errors += !key_ab.matches(key_b)
+          errors += key_ab.matches(key_c)
+          errors += !key_ab.matches(key_ab)
+          errors += key_ab.matches(key_bc)
+          errors += key_ab.matches(key_ac)
+          errors += key_ab.matches(key_abc)
 
-  test('should not match a key containing a foreign index', () => {
-    const keyA = new Key([1, 31, 62])
+          errors += !key_bc.matches(key_none)
+          errors += key_bc.matches(key_a)
+          errors += !key_bc.matches(key_b)
+          errors += !key_bc.matches(key_c)
+          errors += key_bc.matches(key_ab)
+          errors += !key_bc.matches(key_bc)
+          errors += key_bc.matches(key_ac)
+          errors += key_bc.matches(key_abc)
 
-    const keyB = new Key([1, 31, 61])
-    const keyC = new Key([2, 31])
-    const keyD = new Key([1, 30])
-    const keyE = new Key([2])
+          errors += !key_ac.matches(key_none)
+          errors += !key_ac.matches(key_a)
+          errors += key_ac.matches(key_b)
+          errors += !key_ac.matches(key_c)
+          errors += key_ac.matches(key_ab)
+          errors += key_ac.matches(key_bc)
+          errors += !key_ac.matches(key_ac)
+          errors += key_ac.matches(key_abc)
 
-    expect(keyA.matches(keyB)).toBeFalsy()
-    expect(keyA.matches(keyC)).toBeFalsy()
-    expect(keyA.matches(keyD)).toBeFalsy()
-    expect(keyA.matches(keyE)).toBeFalsy()
-  })
+          errors += !key_abc.matches(key_none)
+          errors += !key_abc.matches(key_a)
+          errors += !key_abc.matches(key_b)
+          errors += !key_abc.matches(key_c)
+          errors += !key_abc.matches(key_ab)
+          errors += !key_abc.matches(key_bc)
+          errors += !key_abc.matches(key_ac)
+          errors += !key_abc.matches(key_abc)
+        }
+      }
+    }
 
-  test('should be modifieable in runtime', () => {
-    const keyA = new Key([1, 31, 62])
-    const keyB = new Key([2, 31])
-
-    expect(keyA.matches(keyA)).toBeTruthy()
-    expect(keyA.matches(keyB)).toBeFalsy()
-
-    keyA.setBit(1, false)
-
-    expect(keyA.matches(new Key([31, 62]))).toBeTruthy()
-    expect(keyA.matches(keyB)).toBeFalsy()
-
-    keyA.setBit(2, true)
-
-    expect(keyA.matches(new Key([2, 31, 62]))).toBeTruthy()
-    expect(keyA.matches(keyB)).toBeTruthy()
-
-    keyA.setBit(31, false)
-
-    expect(keyA.matches(new Key([2, 62]))).toBeTruthy()
-    expect(keyA.matches(keyB)).toBeFalsy()
+    expect(errors).toBe(0)
   })
 })
