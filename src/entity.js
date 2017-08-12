@@ -1,26 +1,25 @@
 import { Key } from './key'
 
 export class Entity {
-  constructor(next, announceDirty) {
-    this.prev = null
-    this.next = next
-
+  constructor({ componentIdMap, onKeyChanged }) {
     this.components = []
+    this.componentIdMap = componentIdMap
     this.key = new Key()
 
-    this.dirty = true
-    this.announceDirty = announceDirty
+    this.prev = null
+    this.next = null
 
-    this.announceDirty(this)
+    this.keyChangeAnnounced = false
+    this.onKeyChanged = onKeyChanged
   }
 
-  add(component) {
-    const index = getComponentIndexFromInstance(component)
-    if(!this.components[index]) {
-      this.setDirty(true)
+  add(componentInstance) {
+    const id = this.componentIdMap[componentInstance._componentId]
+    if(this.components[index]) {
+      throw 'Entity.add(): Component already present'
     }
     this.key.setBit(index, true)
-    this.components[index] = component
+    this.components[index] = componentInstance
     return this
   }
 
@@ -53,14 +52,6 @@ export class Entity {
     }
     this.dirty = value
   }
-}
-
-function getComponentIndexFromInstance(component) {
-  const componentClass = component ? component.__proto__.constructor : null
-  if(!component || !isComponentClass(componentClass)) {
-    throw new Error('Entity.add(): Argument is not a component instance')
-  }
-  return componentClass.index
 }
 
 function isComponentClass(value) {

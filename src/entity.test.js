@@ -2,12 +2,6 @@ import { Entity } from './entity'
 import { Key } from './key'
 import { component, __test__resetIndex } from './component'
 
-__test__resetIndex()
-
-beforeEach(() => {
-  __test__resetIndex()
-})
-
 describe('Entity', () => {
   test('#constructor() should construct an object', () => {
     expect(() => {
