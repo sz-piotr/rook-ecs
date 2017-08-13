@@ -3,8 +3,11 @@ import { Key } from './key'
 export class Entity {
   constructor(componentCount, componentIdMap, onKeyChanged) {
     this.components = []
+    for(let i = 0; i < componentCount; i++) {
+      this.components.push(null)
+    }
     this.componentIdMap = componentIdMap
-    this.key = new Key()
+    this.key = new Key(componentCount)
 
     this.prev = null
     this.next = null
@@ -14,7 +17,7 @@ export class Entity {
   }
 
   add(component) {
-    const index = this.getIndexById(component._componentId)
+    const index = this.getIndexById(component._id)
     if(this.components[index]) {
       throw new Error('Cannot add another instance of the same component.')
     }
@@ -26,7 +29,7 @@ export class Entity {
 
   has(Component) {
     const index = this.getIndexById(Component.id)
-    return this.components[index] && true
+    return this.components[index] ? true : false
   }
 
   get(Component) {
@@ -56,6 +59,10 @@ export class Entity {
       this.onKeyChanged(this)
     }
     this.keyChangeAnnounced = true
+  }
+
+  resetOnKeyChanged() {
+    this.keyChangeAnnounced = false
   }
 
   getIndexById(componentId) {

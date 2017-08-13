@@ -8,7 +8,7 @@ describe('component', () => {
     }
     const Decorated = component(Undecorated)
 
-    expect(new Undecorated(1, 2)._componentId).toBe(Decorated.id)
+    expect(new Decorated(1, 2)._id).toBe(Decorated.id)
   })
 
   test('the result should allow for object creation', () => {
@@ -18,10 +18,10 @@ describe('component', () => {
     }
     const Decorated = component(Undecorated)
 
-    expect(Decorated.create(1, 2)).toEqual({ a: 1, b: 2 })
+    expect(new Decorated(1, 2)).toEqual({ a: 1, b: 2 })
   })
 
-  test('consecutive calls return different objects', () => {
+  test('consecutive calls return same object', () => {
     function Undecorated(a, b) {
       this.a = a
       this.b = b
@@ -29,17 +29,13 @@ describe('component', () => {
     const DecoratedA = component(Undecorated)
     const DecoratedB = component(Undecorated)
 
-    expect(DecoratedA).not.toBe(DecoratedB)
+    expect(DecoratedA).toBe(DecoratedB)
   })
 
   test('consecutive calls increment the id', () => {
-    function Undecorated(a, b) {
-      this.a = a
-      this.b = b
-    }
-    const DecoratedA = component(Undecorated)
-    const DecoratedB = component(Undecorated)
-    const DecoratedC = component(Undecorated)
+    const DecoratedA = component(function() {})
+    const DecoratedB = component(function() {})
+    const DecoratedC = component(function() {})
 
     expect(DecoratedB.id).toEqual(DecoratedA.id + 1)
     expect(DecoratedC.id).toBe(DecoratedB.id + 1)
@@ -50,7 +46,7 @@ describe('component', () => {
       this.a = a
       this.b = b
     })
-    const instance = Component.create(1, 2)
+    const instance = new Component(1, 2)
     expect(() => Component.destroy(instance)).not.toThrow()
   })
 
@@ -63,7 +59,7 @@ describe('component', () => {
       innerInstance = this
     })
 
-    const instance = Component.create(1, 2)
+    const instance = new Component(1, 2)
     expect(innerInstance).toBe(undefined)
 
     Component.destroy(instance)

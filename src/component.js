@@ -1,32 +1,15 @@
-import { ObjectPool } from './objectpool'
-
 let index = 0
 
 export function component(objectConstructor, objectDestructor) {
-  const pool = new ObjectPool(objectConstructor)
+  const id = index++
+  objectConstructor.id = id
+  objectConstructor.prototype._id = id
 
-  const component = {
-    id: index++,
-
-    create() {
-      if(pool.isEmpty()) {
-        return new objectConstructor(...arguments)
-      } else {
-        const instance = pool.get()
-        objectConstructor.apply(instance, arguments)
-        return instance
-      }
-    },
-
-    destroy(instance) {
-      if(objectDestructor) {
-        objectDestructor.apply(instance)
-      }
-      pool.put(instance)
+  objectConstructor.destroy = function(instance) {
+    if(objectDestructor) {
+      objectDestructor.apply(instance)
     }
   }
 
-  objectConstructor.prototype._componentId = component.id
-
-  return component
+  return objectConstructor
 }
