@@ -8,11 +8,14 @@ describe('Engine', () => {
   })
 
   test('createEntity() should create an entity', () => {
-    expect(new Engine().createEntity()).toBeInstanceOf(Entity)
+    const engine = new Engine()
+    engine.started = true
+    expect(engine.createEntity()).toBeInstanceOf(Entity)
   })
 
   test('createEntity() should form a linked list', () => {
     const engine = new Engine()
+    engine.started = true
     const e1 = engine.createEntity()
     const e2 = engine.createEntity()
     const e3 = engine.createEntity()
@@ -26,15 +29,9 @@ describe('Engine', () => {
     expect(e3.prev).toBe(null)
   })
 
-  test('createEntity() should disable configuration', () => {
-    const engine = new Engine()
-    expect(engine.configurable).toBe(true)
-    engine.createEntity()
-    expect(engine.configurable).toBe(false)
-  })
-
   test('removeEntity() should remove the entity', () => {
     const engine = new Engine()
+    engine.started = true
     const e1 = engine.createEntity()
     const e2 = engine.createEntity()
     const e3 = engine.createEntity()
@@ -55,4 +52,7 @@ describe('Engine', () => {
 
   // TODO: Test registerSystem
   // TODO: Test registerComponent
+  // TODO: Test update
+  // TODO: Test runSystem
+  // TODO: Test handleChanges
 })

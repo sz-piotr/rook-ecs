@@ -22,6 +22,8 @@ describe('Query', () => {
     engine.registerComponent(ComponentC)
     const query = Query.all(ComponentA, ComponentB).bake(engine)
 
+    engine.started = true
+
     const entity1 = engine.createEntity()
       .add(new ComponentA())
     query.onChange(entity1)
@@ -47,6 +49,8 @@ describe('Query', () => {
   test('baked.onRemove should correctly modify the entities list', () => {
     const engine = new Engine()
     const query = Query.all(ComponentA, ComponentB).bake(engine)
+
+    engine.started = true
 
     const entity1 = engine.createEntity()
       .add(new ComponentA())
