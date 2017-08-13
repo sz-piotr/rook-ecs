@@ -1,7 +1,10 @@
 import { Key } from './key'
 
+let index = 0
+
 export class Entity {
   constructor(componentCount, componentIdMap, onKeyChanged) {
+    this.id = index++
     this.components = []
     for(let i = 0; i < componentCount; i++) {
       this.components.push(null)

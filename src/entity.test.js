@@ -15,6 +15,12 @@ describe('Entity', () => {
     expect(() => new Entity(count, idMap, noop)).not.toThrow()
   })
 
+  test('consequent objects should have consequent ids', () => {
+    const idA = new Entity(count, idMap, noop)
+    const idB = new Entity(count, idMap, noop)
+    expect(idB.id).toEqual(idA.id + 1)
+  })
+
   test('add() should add the component', () => {
     const entity = new Entity(count, idMap, noop)
     const instance = new ComponentA()
