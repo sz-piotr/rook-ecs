@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OUYO Examples: Basic</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script src="../../lib/ouyo.js"></script>
+    <script>
+      const { Engine, component, Query } = OUYO
+      const canvas = document.getElementById('canvas')
+      const ctx = canvas.getContext('2d')
+
+      const engine = new Engine()
+
+      const PositionComponent = component(function(x, y) {
+        this.x = x
+        this.y = y
+      })
+
+      const VelocityComponent = component(function(x, y) {
+        this.x = x
+        this.y = y
+      })
+
+      const RectangleComponent = component(function(width, height, color) {
+        this.width = width
+        this.height = height
+        this.color = color
+      })
+
+      const MovementSystem = {
+        query: Query.all(PositionComponent, VelocityComponent),
+        processEntity(entity, timeDelta) {
+          const position = entity.get(PositionComponent)
+          const velocity = entity.get(VelocityComponent)
+
+          position.x += velocity.x * timeDelta
+          position.y += velocity.y * timeDelta
+        }
+      }
+
+      const ClearScreenSystem = {
+        update() {
+          ctx.fillStyle = 'black'
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+      }
+
+      const RectangleRenderSystem = {
+        query: Query.all(PositionComponent, RectangleComponent),
+        processEntity(entity, timeDelta) {
+          const position = entity.get(PositionComponent)
+          const rectangle = entity.get(RectangleComponent)
+
+          ctx.fillStyle = rectangle.color
+          ctx.fillRect(position.x, position.y, rectangle.width, rectangle.height)
+        }
+      }
+
+      engine.registerSystem(MovementSystem)
+      engine.registerSystem(ClearScreenSystem)
+      engine.registerSystem(RectangleRenderSystem)
+
+      engine.start(function(engine) {
+        engine.createEntity()
+          .add(new PositionComponent(0, 0))
+          .add(new VelocityComponent(5, 5))
+          .add(new RectangleComponent(30, 20, 'yellow'))
+      })
+    </script>
+  </body>
+</html>

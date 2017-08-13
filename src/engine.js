@@ -136,8 +136,8 @@ export class Engine {
   }
 
   update(timeDelta) {
-    for(let i = 0; i < systems.length; ++i) {
-      this.runSystem(systems[i], timeDelta)
+    for(let i = 0; i < this.systems.length; ++i) {
+      this.runSystem(this.systems[i], timeDelta)
       this.handleChanges()
     }
   }
