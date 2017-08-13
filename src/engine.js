@@ -127,7 +127,7 @@ export class Engine {
     const tick = () => {
       if(this.running) {
         now = Date.now()
-        this.update((now - lastTime) / 60)
+        this.update((now - lastTime) / 1000)
         lastTime = now
       }
       requestAnimationFrame(tick)
