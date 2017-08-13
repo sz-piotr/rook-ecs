@@ -8,12 +8,20 @@
   </head>
   <body>
     <canvas id="canvas" width="800" height="600"></canvas>
+    <p id="fps">???</p>
 
     <script src="../../lib/ouyo.js"></script>
     <script>
       const { Engine, component, Query } = OUYO
       const canvas = document.getElementById('canvas')
+      const fpsCounter = document.getElementById('fps')
       const ctx = canvas.getContext('2d')
+      const WIDTH = canvas.width
+      const HEIGHT = canvas.height
+      const HEX_DIGITS = [
+        '0', '1', '2', '3', '4', '5', '6', '7',
+        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+      ]
 
       const engine = new Engine()
 
@@ -44,10 +52,39 @@
         }
       }
 
+      const BounceSystem = {
+        query: Query.all(PositionComponent, RectangleComponent, VelocityComponent),
+        processEntity(entity, timeDelta) {
+          const position = entity.get(PositionComponent)
+          const rectangle = entity.get(RectangleComponent)
+          const velocity = entity.get(VelocityComponent)
+
+          if(position.x < 0) {
+            velocity.x = -velocity.x
+            position.x = -position.x
+          }
+
+          if(position.x + rectangle.width > WIDTH) {
+            velocity.x = -velocity.x
+            position.x = 2 * (WIDTH - rectangle.width) - position.x
+          }
+
+          if(position.y < 0) {
+            velocity.y = -velocity.y
+            position.y = -position.y
+          }
+
+          if(position.y + rectangle.height > HEIGHT) {
+            velocity.y = -velocity.y
+            position.y = 2 * (HEIGHT - rectangle.height) - position.y
+          }
+        }
+      }
+
       const ClearScreenSystem = {
         update() {
           ctx.fillStyle = 'black'
-          ctx.fillRect(0, 0, canvas.width, canvas.height)
+          ctx.fillRect(0, 0, WIDTH, HEIGHT)
         }
       }
 
@@ -62,16 +99,50 @@
         }
       }
 
+      const lastFrames = []
+      const FpsSystem = {
+        update(timeDelta) {
+          if(lastFrames.length === 20) {
+            lastFrames.shift()
+          }
+          lastFrames.push(timeDelta)
+          let avg = 0
+          lastFrames.forEach(frame => avg += frame)
+          avg /= lastFrames.length
+          fpsCounter.innerHTML = (1 / avg).toPrecision(2) + ' FPS'
+        }
+      }
+
       engine.registerSystem(MovementSystem)
+      engine.registerSystem(BounceSystem)
       engine.registerSystem(ClearScreenSystem)
       engine.registerSystem(RectangleRenderSystem)
+      engine.registerSystem(FpsSystem)
 
       engine.start(function(engine) {
-        engine.createEntity()
-          .add(new PositionComponent(0, 0))
-          .add(new VelocityComponent(5, 5))
-          .add(new RectangleComponent(30, 20, 'yellow'))
+        for(let i = 0; i < 1000; i++) {
+          engine.createEntity()
+            .add(new PositionComponent(random(0, WIDTH), random(0, HEIGHT)))
+            .add(new VelocityComponent(random(-300, 300), random(-300, 300)))
+            .add(new RectangleComponent(random(10, 100), random(10, 100), randomColor()))
+        }
       })
+
+      function random(from, to) {
+        return Math.random() * (from - to) + to
+      }
+
+      function choose(array) {
+        return array[Math.floor(Math.random() * array.length)]
+      }
+
+      function randomColor() {
+        let color = '#'
+        for(let i = 0; i < 6; i++) {
+          color += choose(HEX_DIGITS)
+        }
+        return color
+      }
     </script>
   </body>
 </html>
