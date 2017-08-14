@@ -1,12 +1,39 @@
-import { component } from './component'
+import { component, complexComponent } from './component'
 
 describe('component', () => {
+  test('the result should be a constructor', () => {
+    const TestComponent = component('a', 'b')
+    expect(new TestComponent(1, 2)).toEqual({ a: 1, b: 2 })
+  })
+
+  test('the result have and id property', () => {
+    const TestComponent = component('a', 'b')
+    const instance = new TestComponent(1, 2)
+
+    expect(TestComponent.id).not.toBe(undefined)
+    expect(TestComponent.id).toEqual(instance._id)
+  })
+
+  test('must work along complexComponent', () => {
+    const SimpleComponent = component('a', 'b')
+    const ComplexComponent = complexComponent(
+      function(a, b) {
+        this.a = a
+        this.b = b
+      }
+    )
+    expect(ComplexComponent.id).toEqual(SimpleComponent.id + 1)
+    expect(SimpleComponent.destroy).toBeInstanceOf(Function)
+  })
+})
+
+describe('complexComponent', () => {
   test('should modify the prototype of the argument', () => {
     function Undecorated(a, b) {
       this.a = a
       this.b = b
     }
-    const Decorated = component(Undecorated)
+    const Decorated = complexComponent(Undecorated)
 
     expect(new Decorated(1, 2)._id).toBe(Decorated.id)
   })
@@ -16,7 +43,7 @@ describe('component', () => {
       this.a = a
       this.b = b
     }
-    const Decorated = component(Undecorated)
+    const Decorated = complexComponent(Undecorated)
 
     expect(new Decorated(1, 2)).toEqual({ a: 1, b: 2 })
   })
@@ -26,23 +53,23 @@ describe('component', () => {
       this.a = a
       this.b = b
     }
-    const DecoratedA = component(Undecorated)
-    const DecoratedB = component(Undecorated)
+    const DecoratedA = complexComponent(Undecorated)
+    const DecoratedB = complexComponent(Undecorated)
 
     expect(DecoratedA).toBe(DecoratedB)
   })
 
   test('consecutive calls increment the id', () => {
-    const DecoratedA = component(function() {})
-    const DecoratedB = component(function() {})
-    const DecoratedC = component(function() {})
+    const DecoratedA = complexComponent(function() {})
+    const DecoratedB = complexComponent(function() {})
+    const DecoratedC = complexComponent(function() {})
 
     expect(DecoratedB.id).toEqual(DecoratedA.id + 1)
     expect(DecoratedC.id).toBe(DecoratedB.id + 1)
   })
 
   test('should allow object destruction', () => {
-    const Component = component(function (a, b) {
+    const Component = complexComponent(function (a, b) {
       this.a = a
       this.b = b
     })
@@ -52,7 +79,7 @@ describe('component', () => {
 
   test('upon destruction calls the second parameter', () => {
     let innerInstance
-    const Component = component(function (a, b) {
+    const Component = complexComponent(function (a, b) {
       this.a = a
       this.b = b
     }, function() {

@@ -3,9 +3,9 @@ import { component } from './component'
 import { Engine } from './engine'
 import { Key } from './key'
 
-const ComponentA = component(function() {})
-const ComponentB = component(function() {})
-const ComponentC = component(function() {})
+const ComponentA = component()
+const ComponentB = component()
+const ComponentC = component()
 
 describe('Query', () => {
   test('all should create an object with bake method', () => {

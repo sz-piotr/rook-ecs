@@ -3,8 +3,8 @@ import { Key } from './key'
 import { component } from './component'
 
 const noop = () => {}
-const ComponentA = component(function() {})
-const ComponentB = component(function() {})
+const ComponentA = component()
+const ComponentB = component()
 const idMap = {}
 idMap[ComponentA.id] = 0
 idMap[ComponentB.id] = 1
@@ -104,7 +104,7 @@ describe('Entity', () => {
   })
 
   test('using unknown component results in exception', () => {
-    const ComponentC = component(function() {})
+    const ComponentC = component()
     const entity = new Entity(count, idMap, noop)
 
     expect(() => entity.add(new ComponentC())).toThrow()

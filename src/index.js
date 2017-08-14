@@ -1,3 +1,3 @@
 export { Engine } from './engine'
-export { component } from './component'
+export { component, complexComponent } from './component'
 export { Query } from './query'

@@ -25,21 +25,9 @@
 
       const engine = new Engine()
 
-      const PositionComponent = component(function(x, y) {
-        this.x = x
-        this.y = y
-      })
-
-      const VelocityComponent = component(function(x, y) {
-        this.x = x
-        this.y = y
-      })
-
-      const RectangleComponent = component(function(width, height, color) {
-        this.width = width
-        this.height = height
-        this.color = color
-      })
+      const PositionComponent = component('x', 'y')
+      const VelocityComponent = component('x', 'y')
+      const RectangleComponent = component('width', 'height', 'color')
 
       const MovementSystem = {
         query: Query.all(PositionComponent, VelocityComponent),
