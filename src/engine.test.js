@@ -1,6 +1,5 @@
 import { Engine } from './engine'
 import { Entity } from './entity'
-import { component } from './component'
 
 describe('Engine', () => {
   test('constructor() should be a constructor', () => {

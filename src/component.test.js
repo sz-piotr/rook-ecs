@@ -17,7 +17,7 @@ describe('component', () => {
   test('must work along complexComponent', () => {
     const SimpleComponent = component('a', 'b')
     const ComplexComponent = complexComponent(
-      function(a, b) {
+      function (a, b) {
         this.a = a
         this.b = b
       }
@@ -29,7 +29,7 @@ describe('component', () => {
 
 describe('complexComponent', () => {
   test('should modify the prototype of the argument', () => {
-    function Undecorated(a, b) {
+    function Undecorated (a, b) {
       this.a = a
       this.b = b
     }
@@ -39,7 +39,7 @@ describe('complexComponent', () => {
   })
 
   test('the result should allow for object creation', () => {
-    function Undecorated(a, b) {
+    function Undecorated (a, b) {
       this.a = a
       this.b = b
     }
@@ -49,7 +49,7 @@ describe('complexComponent', () => {
   })
 
   test('consecutive calls return same object', () => {
-    function Undecorated(a, b) {
+    function Undecorated (a, b) {
       this.a = a
       this.b = b
     }
@@ -60,9 +60,9 @@ describe('complexComponent', () => {
   })
 
   test('consecutive calls increment the id', () => {
-    const DecoratedA = complexComponent(function() {})
-    const DecoratedB = complexComponent(function() {})
-    const DecoratedC = complexComponent(function() {})
+    const DecoratedA = complexComponent(function () {})
+    const DecoratedB = complexComponent(function () {})
+    const DecoratedC = complexComponent(function () {})
 
     expect(DecoratedB.id).toEqual(DecoratedA.id + 1)
     expect(DecoratedC.id).toBe(DecoratedB.id + 1)
@@ -82,7 +82,7 @@ describe('complexComponent', () => {
     const Component = complexComponent(function (a, b) {
       this.a = a
       this.b = b
-    }, function() {
+    }, function () {
       innerInstance = this
     })
 

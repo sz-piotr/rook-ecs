@@ -37,7 +37,6 @@ describe('Entity', () => {
     expect(() => entity.add(new ComponentA())).toThrow()
   })
 
-
   test('has() should return correct information', () => {
     const entity = new Entity(count, idMap, noop)
     entity.add(new ComponentA())

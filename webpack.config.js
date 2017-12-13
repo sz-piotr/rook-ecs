@@ -1,6 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const package = require('./package')
+const packageJSON = require('./package')
 
 const isProduction = process.env.npm_lifecycle_event === 'build'
 
@@ -9,9 +9,9 @@ const config = {
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'lib'),
-    filename: package.name + '.js',
-    library: package.name.toUpperCase(),
-    libraryTarget: "umd",
+    filename: packageJSON.name + '.js',
+    library: packageJSON.name.toUpperCase(),
+    libraryTarget: 'umd',
     umdNamedDefine: true
   },
   module: {
@@ -26,7 +26,7 @@ const config = {
   plugins: []
 }
 
-if(!isProduction) {
+if (!isProduction) {
   config.plugins = config.plugins.concat([
     new webpack.optimize.ModuleConcatenationPlugin()
   ])

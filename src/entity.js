@@ -3,10 +3,10 @@ import { Key } from './key'
 let index = 0
 
 export class Entity {
-  constructor(componentCount, componentIdMap, onKeyChanged) {
+  constructor (componentCount, componentIdMap, onKeyChanged) {
     this.id = index++
     this.components = []
-    for(let i = 0; i < componentCount; i++) {
+    for (let i = 0; i < componentCount; i++) {
       this.components.push(null)
     }
     this.componentIdMap = componentIdMap
@@ -19,9 +19,9 @@ export class Entity {
     this.onKeyChanged = onKeyChanged
   }
 
-  add(component) {
+  add (component) {
     const index = this.getIndexById(component._id)
-    if(this.components[index]) {
+    if (this.components[index]) {
       throw new Error('Cannot add another instance of the same component.')
     }
     this.key.setBit(index, true)
@@ -30,24 +30,24 @@ export class Entity {
     return this
   }
 
-  has(Component) {
+  has (Component) {
     const index = this.getIndexById(Component.id)
-    return this.components[index] ? true : false
+    return !!this.components[index]
   }
 
-  get(Component) {
+  get (Component) {
     const index = this.getIndexById(Component.id)
     const component = this.components[index]
-    if(!component) {
+    if (!component) {
       throw new Error('Requested component is not present.')
     }
     return component
   }
 
-  remove(Component) {
+  remove (Component) {
     const index = this.getIndexById(Component.id)
     const component = this.components[index]
-    if(!component) {
+    if (!component) {
       throw new Error('Cannot remove component instance, because it doesn\'t  exist on target entity.')
     }
     Component.destroy(component)
@@ -57,20 +57,20 @@ export class Entity {
     return this
   }
 
-  onChange() {
-    if(!this.keyChangeAnnounced) {
+  onChange () {
+    if (!this.keyChangeAnnounced) {
       this.onKeyChanged(this)
     }
     this.keyChangeAnnounced = true
   }
 
-  resetOnKeyChanged() {
+  resetOnKeyChanged () {
     this.keyChangeAnnounced = false
   }
 
-  getIndexById(componentId) {
+  getIndexById (componentId) {
     const index = this.componentIdMap[componentId]
-    if(index === undefined) {
+    if (index === undefined) {
       throw new Error('Unknown component passed as argument. Components not included in queries should be manually' +
         ' registered using Engine.registerComponent().')
     }

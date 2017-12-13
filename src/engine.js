@@ -1,7 +1,7 @@
 import { Entity } from './entity'
 
 export class Engine {
-  constructor() {
+  constructor () {
     this.entities = null
     this.changed = []
     this.removed = []
@@ -17,8 +17,8 @@ export class Engine {
     this.onEntityKeyChange = this.onEntityKeyChange.bind(this)
   }
 
-  createEntity() {
-    if(!this.started) {
+  createEntity () {
+    if (!this.started) {
       throw new Error('Entities cannot be added before the engine is started.')
     }
 
@@ -28,7 +28,7 @@ export class Engine {
       this.onEntityKeyChange
     )
     entity.next = this.entities
-    if(this.entities !== null) {
+    if (this.entities !== null) {
       this.entities.prev = entity
     }
     this.entities = entity
@@ -36,49 +36,49 @@ export class Engine {
     return entity
   }
 
-  removeEntity(entity) {
-    if(!this.started) {
+  removeEntity (entity) {
+    if (!this.started) {
       throw new Error('Entities cannot be removed before the engine is started.')
     }
 
     const next = entity.next
     const prev = entity.prev
 
-    if(next !== null) {
+    if (next !== null) {
       next.prev = entity.prev
     }
-    if(prev !== null) {
+    if (prev !== null) {
       prev.next = entity.next
     }
 
     entity.next = null
     entity.prev = null
 
-    if(this.entities = entity) {
+    if (this.entities === entity) {
       this.entities = next
     }
 
     this.removed.push(entity)
   }
 
-  onEntityKeyChange(entity) {
+  onEntityKeyChange (entity) {
     this.changed.push(entity)
   }
 
-  registerSystem({ query, sort, update, processEntity }) {
-    if(this.started) {
+  registerSystem ({ query, sort, update, processEntity }) {
+    if (this.started) {
       throw new Error('Cannot register system after entities have been added or the engine was started.')
     }
 
-    if(bothOrNone(update, processEntity)) {
+    if (bothOrNone(update, processEntity)) {
       throw new Error('Exactly one of "update" and "processEntity" must be defined on a system.')
     }
 
-    if(!query && processEntity) {
+    if (!query && processEntity) {
       throw new Error('"processEntity" can only be used with a query.')
     }
 
-    if(!query && sort) {
+    if (!query && sort) {
       throw new Error('"sort" can only be used with a query.')
     }
 
@@ -86,8 +86,8 @@ export class Engine {
       query: query ? query.bake(this) : false,
       sort,
       sorted: [],
-      update: update || function(entities, timeDelta, engine) {
-        for(let i = 0; i < entities.length; ++i) {
+      update: update || function (entities, timeDelta, engine) {
+        for (let i = 0; i < entities.length; ++i) {
           processEntity(entities[i], timeDelta, engine)
         }
       }
@@ -95,57 +95,57 @@ export class Engine {
 
     this.systems.push(system)
 
-    if(system.query) {
+    if (system.query) {
       this.queries.push(system.query)
     }
   }
 
-  registerComponent(component) {
-    if(this.started) {
+  registerComponent (component) {
+    if (this.started) {
       throw new Error('Cannot register component after entities have been added or the engine was started.')
     }
 
-    while(component.id >= this.componentIdMap.length) {
+    while (component.id >= this.componentIdMap.length) {
       this.componentIdMap.push(null)
     }
     const index = this.componentIdMap[component.id]
-    if(index === null) {
+    if (index === null) {
       this.componentIdMap[component.id] = this.componentsCount++
     }
   }
 
-  start(init) {
+  start (init) {
     // TODO: add pause
     this.started = true
     this.running = true
-    if(init) {
+    if (init) {
       init(this)
     }
 
     let now
     let lastTime = Date.now()
     const tick = () => {
-      if(this.running) {
+      if (this.running) {
         now = Date.now()
         this.update((now - lastTime) / 1000)
         lastTime = now
       }
-      requestAnimationFrame(tick)
+      window.requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
+    window.requestAnimationFrame(tick)
   }
 
-  update(timeDelta) {
-    for(let i = 0; i < this.systems.length; ++i) {
+  update (timeDelta) {
+    for (let i = 0; i < this.systems.length; ++i) {
       this.runSystem(this.systems[i], timeDelta)
       this.handleChanges()
     }
   }
 
-  runSystem(system, timeDelta) {
-    if(system.query) {
+  runSystem (system, timeDelta) {
+    if (system.query) {
       let entities = system.query.entities
-      if(system.sort) {
+      if (system.sort) {
         copyArray(entities, system.sorted)
         entities = system.sorted
         entities.sort(system.sort)
@@ -156,18 +156,18 @@ export class Engine {
     }
   }
 
-  handleChanges() {
-    for(let i = 0; i < this.changed.length; i++) {
+  handleChanges () {
+    for (let i = 0; i < this.changed.length; i++) {
       let changed = this.changed[i]
-      for(let j = 0; j < this.queries.length; j++) {
+      for (let j = 0; j < this.queries.length; j++) {
         this.queries[j].onChange(changed)
       }
     }
     this.changed.length = 0
 
-    for(let i = 0; i < this.removed.length; i++) {
+    for (let i = 0; i < this.removed.length; i++) {
       let removed = this.removed[i]
-      for(let j = 0; j < this.queries.length; j++) {
+      for (let j = 0; j < this.queries.length; j++) {
         this.queries[j].onRemove(removed)
       }
     }
@@ -175,12 +175,12 @@ export class Engine {
   }
 }
 
-function bothOrNone(a, b) {
+function bothOrNone (a, b) {
   return (a && b) || (!a && !b)
 }
 
-function copyArray(from, to) {
-  for(let i = 0; i < from.length; ++i) {
+function copyArray (from, to) {
+  for (let i = 0; i < from.length; ++i) {
     to[i] = from[i]
   }
   to.length = from.length
