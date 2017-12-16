@@ -1,9 +1,9 @@
 import { Entity } from './entity'
 import { assert, map, forEach, forEach2 } from './utils'
-import { component } from './component'
+import { createComponent } from './component'
 
 export class Game {
-  constructor () {
+  constructor (registerUpdate = onAnimationFrame) {
     this.entities = null
     this.changed = []
     this.removed = []
@@ -13,7 +13,13 @@ export class Game {
     this.componentCount = 0
 
     this.started = false
-    this.onEntityChange = entity => this.onEntityChange(entity)
+    this.registerUpdate = registerUpdate
+    this.onEntityChange = entity => this.changed.push(entity)
+  }
+
+  createComponent (...fields) {
+    assert(!this.started, 'Cannot create component after the game was started.')
+    return createComponent(fields, this.componentCount++)
   }
 
   createEntity () {
@@ -61,7 +67,7 @@ export class Game {
 
     const unifiedSystem = {
       query: system.query || [],
-      update: system.process || createProcess(system.processEntity)
+      process: system.process || createProcess(system.processEntity)
     }
 
     this.systems.push(unifiedSystem)
@@ -71,31 +77,23 @@ export class Game {
   _registerQuery (query) {
     if (Array.isArray(query)) {
       forEach(query, subQuery => this.queries.push(subQuery))
-    } else {
+    } else if (query) {
       this.queries.push(query)
     }
-  }
-
-  createComponent (...fields) {
-    assert(!this.started, 'Cannot register component after the game was started.')
-    return component(fields, this.componentCount++)
   }
 
   start (init) {
     assert(!this.started, 'A game can only be started once!')
     this.started = true
+
     init(this)
 
-    let now
     let lastTime = Date.now()
-
-    const tick = () => {
-      window.requestAnimationFrame(tick)
-      now = Date.now()
+    this.registerUpdate(() => {
+      const now = Date.now()
       this._update((now - lastTime) / 1000)
       lastTime = now
-    }
-    window.requestAnimationFrame(tick)
+    })
   }
 
   _update (timeDelta) {
@@ -128,6 +126,8 @@ function createProcess (processEntity) {
 function getEntities (query) {
   if (Array.isArray(query)) {
     return map(query, subQuery => subQuery.entities)
+  } else {
+    return query.entities
   }
 }
 
@@ -137,4 +137,12 @@ function handleEntityChange (entity, query) {
 
 function handleEntityRemove (entity, query) {
   query.onRemove(entity)
+}
+
+function onAnimationFrame (callback) {
+  window.requestAnimationFrame(update)
+  function update () {
+    window.requestAnimationFrame(update)
+    callback()
+  }
 }

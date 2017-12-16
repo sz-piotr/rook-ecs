@@ -1,4 +1,4 @@
-export function component (fields, id) {
+export function createComponent (fields, id) {
   let body = ''
   for (let i = 0; i < fields.length; i++) {
     let field = fields[i]

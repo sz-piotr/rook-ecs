@@ -1,10 +1,10 @@
 import { Query } from '../src/Query'
-import { component } from '../src/component'
+import { createComponent } from '../src/component'
 import { Entity } from '../src/Entity'
 
-const ComponentA = component([], 0)
-const ComponentB = component([], 1)
-const ComponentC = component([], 2)
+const ComponentA = createComponent([], 0)
+const ComponentB = createComponent([], 1)
+const ComponentC = createComponent([], 2)
 
 const COUNT = 3
 const NOOP = () => {}

@@ -1,9 +1,9 @@
 import { Entity } from '../src/Entity'
 import { Key } from '../src/Key'
-import { component } from '../src/component'
+import { createComponent } from '../src/component'
 
-const ComponentA = component([], 0)
-const ComponentB = component([], 1)
+const ComponentA = createComponent([], 0)
+const ComponentB = createComponent([], 1)
 const COUNT = 2
 const NOOP = () => {}
 
@@ -100,7 +100,7 @@ describe('Entity', () => {
   })
 
   test('using unknown component results in exception', () => {
-    const ComponentC = component([], 2)
+    const ComponentC = createComponent([], 2)
     const entity = new Entity(COUNT, NOOP)
 
     expect(() => entity.add(new ComponentC())).toThrow()

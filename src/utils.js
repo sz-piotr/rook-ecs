@@ -16,7 +16,7 @@ export function forEach2 (a, b, fn) {
   for (let i = 0; i < a.length; i++) {
     let aItem = a[i]
     for (let j = 0; j < b.length; j++) {
-      fn(aItem, b[i])
+      fn(aItem, b[j])
     }
   }
 }
