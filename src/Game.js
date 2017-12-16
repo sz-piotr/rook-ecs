@@ -101,9 +101,9 @@ export class Game {
   }
 
   _runSystem (system, timeDelta) {
+    this._handleChanges()
     const entities = getEntities(system.query)
     system.process(entities, timeDelta, this)
-    this._handleChanges()
   }
 
   _handleChanges () {

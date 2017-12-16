@@ -83,24 +83,25 @@ describe('Game', () => {
 
   it('can run a system with processEntity', () => {
     const game = new Game(onTick)
+    const A = game.createComponent()
 
     const System = {
-      query: new Query(),
+      query: new Query(A),
       processEntity: jest.fn()
     }
 
     game.registerSystems([System])
 
     game.start(game => {
-      game.createEntity()
-      game.createEntity()
+      game.createEntity().add(new A())
+      game.createEntity().add(new A())
     })
 
     tick()
 
     expect(System.processEntity.mock.calls).toEqual([
-      // [[expect.anything()], expect.anything(), game],
-      // [[expect.anything()], expect.anything(), game]
+      [expect.anything(), expect.anything(), game],
+      [expect.anything(), expect.anything(), game]
     ])
   })
 })
