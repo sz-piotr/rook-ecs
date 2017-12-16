@@ -19,7 +19,7 @@ export class Entity {
   add (componentInstance) {
     const index = componentInstance._id
 
-    assert(this._components[index], 'Cannot add another instance of the same component.')
+    assert(!this._components[index], 'Cannot add another instance of the same component.')
     assert(index < this._components.length, 'Unknown component passed as argument.')
 
     this.key.setBit(index, true)
