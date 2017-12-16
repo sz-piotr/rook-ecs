@@ -1,4 +1,4 @@
-import { Key } from './key'
+import { Key } from './Key'
 import { assert } from './utils'
 
 let index = 0

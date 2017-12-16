@@ -1,4 +1,4 @@
-import { Entity } from './entity'
+import { Entity } from './Entity'
 import { assert, map, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
 
