@@ -10,6 +10,7 @@ export class Game {
 
     this.systems = []
     this.queries = []
+    this.events = ['tick']
     this.componentCount = 0
 
     this.started = false
@@ -20,6 +21,68 @@ export class Game {
   createComponent (...fields) {
     assert(!this.started, 'Cannot create component after the game was started.')
     return createComponent(fields, this.componentCount++)
+  }
+
+  registerSystems (systems) {
+    forEach(systems, system => this._registerSystem(system))
+  }
+
+  _registerSystem (system) {
+    assert(!this.started, 'Cannot register systems after the game was started.')
+
+    const unifiedSystem = {
+      query: system.query || [],
+      on: Array.isArray(system.on)
+        ? system.on
+        : [system.on || 'tick'],
+      process: system.process || createProcess(system.processEntity)
+    }
+
+    this.systems.push(unifiedSystem)
+    this._registerQuery(system.query)
+  }
+
+  _registerQuery (query) {
+    if (Array.isArray(query)) {
+      forEach(query, subQuery => this.queries.push(subQuery))
+    } else if (query) {
+      this.queries.push(query)
+    }
+  }
+
+  start (init) {
+    assert(!this.started, 'A game can only be started once!')
+    this.started = true
+
+    init(this)
+
+    let lastTime = Date.now()
+    this.registerUpdate(() => {
+      const now = Date.now()
+      this._update((now - lastTime) / 1000)
+      lastTime = now
+    })
+  }
+
+  _update (timeDelta) {
+    this.events.length = 1
+    forEach(this.systems, system => this._runSystem(system, timeDelta))
+  }
+
+  _runSystem (system, timeDelta) {
+    if (overlap(system.on, this.events)) {
+      this._handleChanges()
+      const entities = getEntities(system.query)
+      system.process(entities, timeDelta, this)
+    }
+  }
+
+  _handleChanges () {
+    forEach2(this.changed, this.queries, handleEntityChange)
+    this.changed.length = 0
+
+    forEach2(this.removed, this.queries, handleEntityRemove)
+    this.removed.length = 0
   }
 
   createEntity () {
@@ -58,60 +121,8 @@ export class Game {
     this.removed.push(entity)
   }
 
-  registerSystems (systems) {
-    forEach(systems, system => this._registerSystem(system))
-  }
-
-  _registerSystem (system) {
-    assert(!this.started, 'Cannot register systems after the game was started.')
-
-    const unifiedSystem = {
-      query: system.query || [],
-      process: system.process || createProcess(system.processEntity)
-    }
-
-    this.systems.push(unifiedSystem)
-    this._registerQuery(system.query)
-  }
-
-  _registerQuery (query) {
-    if (Array.isArray(query)) {
-      forEach(query, subQuery => this.queries.push(subQuery))
-    } else if (query) {
-      this.queries.push(query)
-    }
-  }
-
-  start (init) {
-    assert(!this.started, 'A game can only be started once!')
-    this.started = true
-
-    init(this)
-
-    let lastTime = Date.now()
-    this.registerUpdate(() => {
-      const now = Date.now()
-      this._update((now - lastTime) / 1000)
-      lastTime = now
-    })
-  }
-
-  _update (timeDelta) {
-    forEach(this.systems, system => this._runSystem(system, timeDelta))
-  }
-
-  _runSystem (system, timeDelta) {
-    this._handleChanges()
-    const entities = getEntities(system.query)
-    system.process(entities, timeDelta, this)
-  }
-
-  _handleChanges () {
-    forEach2(this.changed, this.queries, handleEntityChange)
-    this.changed.length = 0
-
-    forEach2(this.removed, this.queries, handleEntityRemove)
-    this.removed.length = 0
+  emit (event) {
+    this.events.push(event)
   }
 }
 
@@ -145,4 +156,8 @@ function onAnimationFrame (callback) {
     window.requestAnimationFrame(update)
     callback()
   }
+}
+
+function overlap (a, b) {
+  return a.some(x => b.indexOf(x) !== -1)
 }

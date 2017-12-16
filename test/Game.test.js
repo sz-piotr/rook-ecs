@@ -130,4 +130,33 @@ describe('Game', () => {
       game
     )
   })
+
+  it('can run a system listening for events', () => {
+    const game = new Game(onTick)
+
+    let i = 0
+    const EmitterSystem = {
+      process (entities, timeDelta, game) {
+        if (i++ === 1) {
+          game.emit('hello')
+        }
+      }
+    }
+
+    const OnHelloSystem = {
+      on: 'hello',
+      process: jest.fn()
+    }
+
+    game.registerSystems([EmitterSystem, OnHelloSystem])
+    game.start(() => {})
+
+    tick()
+    expect(OnHelloSystem.process).not.toHaveBeenCalled()
+
+    game.emit('hello')
+
+    tick()
+    expect(OnHelloSystem.process).toHaveBeenCalled()
+  })
 })
