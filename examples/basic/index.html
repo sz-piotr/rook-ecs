@@ -12,7 +12,8 @@
 
     <script src="../../lib/ouyo.js"></script>
     <script>
-      const { Engine, component, Query } = OUYO
+      const { Game, Query } = OUYO
+
       const canvas = document.getElementById('canvas')
       const fpsCounter = document.getElementById('fps')
       const ctx = canvas.getContext('2d')
@@ -23,14 +24,14 @@
         '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
       ]
 
-      const engine = new Engine()
+      const game = new Game()
 
-      const PositionComponent = component('x', 'y')
-      const VelocityComponent = component('x', 'y')
-      const RectangleComponent = component('width', 'height', 'color')
+      const PositionComponent = game.createComponent('x', 'y')
+      const VelocityComponent = game.createComponent('x', 'y')
+      const RectangleComponent = game.createComponent('width', 'height', 'color')
 
       const MovementSystem = {
-        query: Query.all(PositionComponent, VelocityComponent),
+        query: new Query(PositionComponent, VelocityComponent),
         processEntity(entity, timeDelta) {
           const position = entity.get(PositionComponent)
           const velocity = entity.get(VelocityComponent)
@@ -41,7 +42,7 @@
       }
 
       const BounceSystem = {
-        query: Query.all(PositionComponent, RectangleComponent, VelocityComponent),
+        query: new Query(PositionComponent, RectangleComponent, VelocityComponent),
         processEntity(entity, timeDelta) {
           const position = entity.get(PositionComponent)
           const rectangle = entity.get(RectangleComponent)
@@ -70,14 +71,14 @@
       }
 
       const ClearScreenSystem = {
-        update() {
+        process() {
           ctx.fillStyle = 'black'
           ctx.fillRect(0, 0, WIDTH, HEIGHT)
         }
       }
 
       const RectangleRenderSystem = {
-        query: Query.all(PositionComponent, RectangleComponent),
+        query: new Query(PositionComponent, RectangleComponent),
         processEntity(entity, timeDelta) {
           const position = entity.get(PositionComponent)
           const rectangle = entity.get(RectangleComponent)
@@ -89,7 +90,7 @@
 
       const lastFrames = []
       const FpsSystem = {
-        update(timeDelta) {
+        process(entities, timeDelta) {
           if(lastFrames.length === 20) {
             lastFrames.shift()
           }
@@ -101,15 +102,17 @@
         }
       }
 
-      engine.registerSystem(MovementSystem)
-      engine.registerSystem(BounceSystem)
-      engine.registerSystem(ClearScreenSystem)
-      engine.registerSystem(RectangleRenderSystem)
-      engine.registerSystem(FpsSystem)
+      game.registerSystems([
+        MovementSystem,
+        BounceSystem,
+        ClearScreenSystem,
+        RectangleRenderSystem,
+        FpsSystem
+      ])
 
-      engine.start(function(engine) {
+      game.start(function(game) {
         for(let i = 0; i < 1000; i++) {
-          engine.createEntity()
+          game.createEntity()
             .add(new PositionComponent(random(0, WIDTH), random(0, HEIGHT)))
             .add(new VelocityComponent(random(-300, 300), random(-300, 300)))
             .add(new RectangleComponent(random(10, 100), random(10, 100), randomColor()))
