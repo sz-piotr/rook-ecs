@@ -4,3 +4,9 @@ export function forEach (array, fn) {
     fn(array[i])
   }
 }
+
+export function assert (condition, errorMessage) {
+  if (!condition) {
+    throw new Error(errorMessage)
+  }
+}

@@ -2,7 +2,7 @@ export function component (fields, id) {
   let body = ''
   for (let i = 0; i < fields.length; i++) {
     let field = fields[i]
-    if (/^[_a-zA-Z]\w*$/.exec(field)) {
+    if (/^[a-zA-Z]\w*$/.exec(field)) {
       body += `this.${field}=${field};`
     } else {
       throw new Error('Invalid identifier: ' + field)
