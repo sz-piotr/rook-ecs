@@ -24,9 +24,9 @@ export class Query {
 
   onChange (entity) {
     const isInQuery = this._entities.has(entity)
-    const matched = this.key.matches(entity.key)
+    const matched = entity.key.matches(this.key)
 
-    if (isInQuery && matched) {
+    if (!isInQuery && matched) {
       this._entities.put(entity)
     } else if (isInQuery && !matched) {
       this._entities.remove(entity)

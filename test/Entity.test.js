@@ -4,23 +4,22 @@ import { component } from '../src/component'
 
 const ComponentA = component([], 0)
 const ComponentB = component([], 1)
-const count = 2
-
-const noop = () => {}
+const COUNT = 2
+const NOOP = () => {}
 
 describe('Entity', () => {
   it('can be constructed', () => {
-    expect(() => new Entity(count, noop)).not.toThrow()
+    expect(() => new Entity(COUNT, NOOP)).not.toThrow()
   })
 
   test('consequent objects should have consequent ids', () => {
-    const entityA = new Entity(count, noop)
-    const entityB = new Entity(count, noop)
+    const entityA = new Entity(COUNT, NOOP)
+    const entityB = new Entity(COUNT, NOOP)
     expect(entityB.id).toEqual(entityA.id + 1)
   })
 
   test('add() should add the component', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     const instance = new ComponentA()
     entity.add(instance)
 
@@ -29,14 +28,14 @@ describe('Entity', () => {
   })
 
   test('add() should prevent adding another instance', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
 
     expect(() => entity.add(new ComponentA())).not.toThrow()
     expect(() => entity.add(new ComponentA())).toThrow()
   })
 
   test('has() should return correct information', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     entity.add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
@@ -46,14 +45,14 @@ describe('Entity', () => {
   test('get() should retrieve the correct instance', () => {
     const instance = new ComponentA()
 
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     entity.add(instance)
 
     expect(entity.get(ComponentA)).toBe(instance)
   })
 
   test('get() should throw if component doesn\'t exist', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     entity.add(new ComponentA())
 
     expect(() => entity.get(ComponentA)).not.toThrow()
@@ -61,7 +60,7 @@ describe('Entity', () => {
   })
 
   test('remove() should remove the component', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     entity.add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
@@ -72,7 +71,7 @@ describe('Entity', () => {
   })
 
   test('remove() should throw if component doesn\'t exist', () => {
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
     entity.add(new ComponentA())
 
     expect(() => entity.remove(ComponentA)).not.toThrow()
@@ -83,7 +82,7 @@ describe('Entity', () => {
   test('onKeyChanged correct call behaviour', () => {
     const onKeyChanged = jest.fn()
 
-    const entity = new Entity(count, onKeyChanged)
+    const entity = new Entity(COUNT, onKeyChanged)
     entity.add(new ComponentA())
 
     expect(onKeyChanged).toBeCalledWith(entity)
@@ -102,7 +101,7 @@ describe('Entity', () => {
 
   test('using unknown component results in exception', () => {
     const ComponentC = component([], 2)
-    const entity = new Entity(count, noop)
+    const entity = new Entity(COUNT, NOOP)
 
     expect(() => entity.add(new ComponentC())).toThrow()
   })
