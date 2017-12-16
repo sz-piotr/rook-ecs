@@ -104,4 +104,30 @@ describe('Game', () => {
       [expect.anything(), expect.anything(), game]
     ])
   })
+
+  it('can run a system with many queries', () => {
+    const game = new Game(onTick)
+    const A = game.createComponent()
+    const B = game.createComponent()
+
+    const System = {
+      query: [new Query(A), new Query(B)],
+      process: jest.fn()
+    }
+
+    game.registerSystems([System])
+
+    game.start(game => {
+      game.createEntity().add(new A())
+      game.createEntity().add(new B())
+    })
+
+    tick()
+
+    expect(System.process).toHaveBeenCalledWith(
+      [[expect.anything()], [expect.anything()]],
+      expect.anything(),
+      game
+    )
+  })
 })
