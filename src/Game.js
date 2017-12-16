@@ -61,7 +61,7 @@ export class Game {
 
     const unifiedSystem = {
       query: system.query || [],
-      update: system.update || createUpdate(system.processEntity)
+      update: system.process || createProcess(system.processEntity)
     }
 
     this.systems.push(unifiedSystem)
@@ -82,6 +82,7 @@ export class Game {
   }
 
   start (init) {
+    assert(!this.started, 'A game can only be started once!')
     this.started = true
     init(this)
 
@@ -103,7 +104,7 @@ export class Game {
 
   _runSystem (system, timeDelta) {
     const entities = getEntities(system.query)
-    system.update(entities, timeDelta, this)
+    system.process(entities, timeDelta, this)
     this._handleChanges()
   }
 
@@ -116,7 +117,7 @@ export class Game {
   }
 }
 
-function createUpdate (processEntity) {
+function createProcess (processEntity) {
   return function (entities, timeDelta, game) {
     for (let i = 0; i < entities.length; ++i) {
       processEntity(entities[i], timeDelta, game)
