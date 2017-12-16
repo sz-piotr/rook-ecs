@@ -1,12 +1,14 @@
 import { Key } from './key'
 import { IndexedArray } from './IndexedArray'
+import { forEach } from './utils'
 
 export class Query {
-  constructor (...args) {
-    this._components = args
+  constructor (...components) {
     this._entities = new IndexedArray()
-    this.key = null
     this._one = false
+
+    this.key = new Key(maxId(components) + 1)
+    forEach(components, ({ id }) => this.key.set(id))
   }
 
   one () {
@@ -18,15 +20,6 @@ export class Query {
     return this._one
       ? this._entities.elements[0]
       : this._entities.elements
-  }
-
-  bake (engine) {
-    this.key = new Key(engine.componentsCount + this._components.length)
-    this._components.forEach(component => {
-      engine.registerComponent(component)
-      this.key.set(engine.componentIdMap[component.id])
-    })
-    return this
   }
 
   onChange (entity) {
@@ -43,4 +36,10 @@ export class Query {
   onRemove (entity) {
     this._entities.remove(entity)
   }
+}
+
+function maxId (components) {
+  let maxId = 0
+  forEach(components, ({ id }) => id > maxId && (maxId = id))
+  return maxId
 }

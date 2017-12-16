@@ -1,31 +1,19 @@
-let index = 0
-
-export function component () {
-  let functionArguments = []
+export function component (fields, id) {
   let body = ''
-  for (let i = 0; i < arguments.length; i++) {
-    if (/^[_a-zA-Z]\w*$/.exec(arguments[i])) {
-      let arg = arguments[i]
-      functionArguments[i] = arg
-      body += `this.${arg}=${arg};`
+  for (let i = 0; i < fields.length; i++) {
+    let field = fields[i]
+    if (/^[_a-zA-Z]\w*$/.exec(field)) {
+      body += `this.${field}=${field};`
     } else {
-      throw new Error('Invalid identifier: ' + arguments[i])
+      throw new Error('Invalid identifier: ' + field)
     }
   }
   /* eslint-disable no-new-func */
-  return complexComponent(new Function(functionArguments, body))
+  return decorate(new Function(fields, body), id)
 }
 
-export function complexComponent (objectConstructor, objectDestructor) {
-  const id = index++
-  objectConstructor.id = id
-  objectConstructor.prototype._id = id
-
-  objectConstructor.destroy = function (instance) {
-    if (objectDestructor) {
-      objectDestructor.apply(instance)
-    }
-  }
-
-  return objectConstructor
+export function decorate (constructor, id) {
+  constructor.id = id
+  constructor.prototype._id = id
+  return constructor
 }
