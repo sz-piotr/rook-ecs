@@ -1,4 +1,4 @@
-import { Key } from './key'
+import { Key } from './Key'
 import { IndexedArray } from './IndexedArray'
 import { forEach } from './utils'
 
