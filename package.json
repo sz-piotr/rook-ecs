@@ -20,7 +20,7 @@
     "prepublishOnly": "npm run build",
     "build": "webpack -p --progress",
     "test": "standard && jest",
-    "testwatch": "jest --watchAll",
+    "test:watch": "jest --watchAll",
     "lint": "standard"
   },
   "devDependencies": {

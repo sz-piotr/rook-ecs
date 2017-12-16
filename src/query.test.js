@@ -8,19 +8,15 @@ const ComponentB = component()
 const ComponentC = component()
 
 describe('Query', () => {
-  test('all should create an object with bake method', () => {
-    expect(Query.all(ComponentA).bake).toBeInstanceOf(Function)
-  })
-
-  test('the bake method should return a working query', () => {
-    const query = Query.all(ComponentA, ComponentB).bake(new Engine())
+  test('baking should initialize the key', () => {
+    const query = new Query(ComponentA, ComponentB).bake(new Engine())
     expect(query.key).toBeInstanceOf(Key)
   })
 
-  test('baked.onChange should correctly modify the entities list', () => {
+  test('onChange should correctly modify the entities list', () => {
     const engine = new Engine()
     engine.registerComponent(ComponentC)
-    const query = Query.all(ComponentA, ComponentB).bake(engine)
+    const query = new Query(ComponentA, ComponentB).bake(engine)
 
     engine.started = true
 
@@ -46,9 +42,9 @@ describe('Query', () => {
     expect(query.entities).toEqual([])
   })
 
-  test('baked.onRemove should correctly modify the entities list', () => {
+  test('onRemove should correctly modify the entities list', () => {
     const engine = new Engine()
-    const query = Query.all(ComponentA, ComponentB).bake(engine)
+    const query = new Query(ComponentA, ComponentB).bake(engine)
 
     engine.started = true
 

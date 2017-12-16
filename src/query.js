@@ -1,39 +1,20 @@
 import { Key } from './key'
 
-export const Query = {
-  all (...args) {
-    return new UnbakedQuery().all(...args)
-  }
-}
-
-class UnbakedQuery {
-  constructor () {
-    this.components = []
-  }
-
-  all (...args) {
-    if (args.length === 0) {
-      throw new Error('The all() method must take at least one argument.')
-    }
-    this.components.push(...args)
-
-    return this
+export class Query {
+  constructor (...args) {
+    this.components = args
+    this.key = null
+    this.idMap = {}
+    this.entities = []
   }
 
   bake (engine) {
-    return new BakedQuery(this, engine)
-  }
-}
-
-class BakedQuery {
-  constructor ({ components }, engine) {
-    this.key = new Key(engine.componentsCount + components.length)
-    components.forEach(component => {
+    this.key = new Key(engine.componentsCount + this.components.length)
+    this.components.forEach(component => {
       engine.registerComponent(component)
       this.key.set(engine.componentIdMap[component.id])
     })
-    this.idMap = {}
-    this.entities = []
+    return this
   }
 
   onChange (entity) {
