@@ -17,8 +17,8 @@ export class IndexedArray {
     const index = this._indices[object.id]
     if (index !== undefined) {
       delete this._indices[object.id]
-      const otherObject = this._entities.pop()
-      if (otherObject !== object) {
+      const otherObject = this.elements.pop()
+      if (otherObject.id !== object.id) {
         this.elements[index] = otherObject
         this._indices[otherObject.id] = index
       }
