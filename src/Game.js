@@ -106,7 +106,7 @@ export class Game {
     }
     const now = Date.now()
     const lastTime = this.eventTimes[event] || now
-    event.timeDelta = now - lastTime
+    event.timeDelta = (now - lastTime) / 1000
     this.eventTimes[event] = now
     this.events.push(event)
   }

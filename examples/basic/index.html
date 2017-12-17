@@ -32,18 +32,18 @@
 
       const MovementSystem = {
         query: new Query(PositionComponent, VelocityComponent),
-        processEntity(entity, timeDelta) {
+        processEntity(entity, event) {
           const position = entity.get(PositionComponent)
           const velocity = entity.get(VelocityComponent)
 
-          position.x += velocity.x * timeDelta
-          position.y += velocity.y * timeDelta
+          position.x += velocity.x * event.timeDelta
+          position.y += velocity.y * event.timeDelta
         }
       }
 
       const BounceSystem = {
         query: new Query(PositionComponent, RectangleComponent, VelocityComponent),
-        processEntity(entity, timeDelta) {
+        processEntity(entity) {
           const position = entity.get(PositionComponent)
           const rectangle = entity.get(RectangleComponent)
           const velocity = entity.get(VelocityComponent)
@@ -79,7 +79,7 @@
 
       const RectangleRenderSystem = {
         query: new Query(PositionComponent, RectangleComponent),
-        processEntity(entity, timeDelta) {
+        processEntity(entity) {
           const position = entity.get(PositionComponent)
           const rectangle = entity.get(RectangleComponent)
 
@@ -90,11 +90,11 @@
 
       const lastFrames = []
       const FpsSystem = {
-        process(entities, timeDelta) {
+        process(entities, event) {
           if(lastFrames.length === 20) {
             lastFrames.shift()
           }
-          lastFrames.push(timeDelta)
+          lastFrames.push(event.timeDelta)
           let avg = 0
           lastFrames.forEach(frame => avg += frame)
           avg /= lastFrames.length
