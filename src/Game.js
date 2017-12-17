@@ -1,9 +1,10 @@
 import { Entity } from './Entity'
 import { assert, map, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
+import { defaultTicker } from './ticker'
 
 export class Game {
-  constructor (registerUpdate = onAnimationFrame) {
+  constructor (registerUpdate = defaultTicker) {
     this.changed = []
     this.removed = []
 
@@ -16,6 +17,7 @@ export class Game {
     this.componentCount = 0
 
     this.started = false
+    this.runtime = 0
     this.registerUpdate = registerUpdate
     this.onEntityChange = entity => this.changed.push(entity)
   }
@@ -56,10 +58,11 @@ export class Game {
 
     init(this)
 
-    this.registerUpdate(() => this._update())
+    this.registerUpdate(timeDelta => this._update(timeDelta))
   }
 
   _update (timeDelta) {
+    this.runtime += timeDelta
     this.events.length = 0
     this.emit('tick')
     forEach(this.systems, system => this._runSystem(system))
@@ -104,10 +107,10 @@ export class Game {
     if (typeof event === 'string') {
       event = { type: event }
     }
-    const now = Date.now()
-    const lastTime = this.eventTimes[event] || now
+    const now = this.runtime
+    const lastTime = fallback(this.eventTimes[event.type], now)
     event.timeDelta = (now - lastTime) / 1000
-    this.eventTimes[event] = now
+    this.eventTimes[event.type] = now
     this.events.push(event)
   }
 }
@@ -118,6 +121,10 @@ function createProcess (processEntity) {
       processEntity(entities[i], event, game)
     }
   }
+}
+
+function fallback (value, fallback) {
+  return value !== undefined ? value : fallback
 }
 
 function getEntities (query) {
@@ -134,12 +141,4 @@ function handleEntityChange (entity, query) {
 
 function handleEntityRemove (entity, query) {
   query.onRemove(entity)
-}
-
-function onAnimationFrame (callback) {
-  window.requestAnimationFrame(update)
-  function update () {
-    window.requestAnimationFrame(update)
-    callback()
-  }
 }

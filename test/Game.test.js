@@ -52,7 +52,7 @@ describe('Game', () => {
       game.createEntity()
     })
 
-    tick()
+    tick(0)
 
     expect(System1.process).toHaveBeenCalledWith([], expect.anything(), game)
     expect(System2.process).toHaveBeenCalledWith([], expect.anything(), game)
@@ -74,7 +74,7 @@ describe('Game', () => {
       game.createEntity()
     })
 
-    tick()
+    tick(0)
 
     expect(System.process).toHaveBeenCalledWith(
       [expect.anything()], expect.anything(), game
@@ -97,7 +97,7 @@ describe('Game', () => {
       game.createEntity().add(new A())
     })
 
-    tick()
+    tick(0)
 
     expect(System.processEntity.mock.calls).toEqual([
       [expect.anything(), expect.anything(), game],
@@ -122,7 +122,7 @@ describe('Game', () => {
       game.createEntity().add(new B())
     })
 
-    tick()
+    tick(0)
 
     expect(System.process).toHaveBeenCalledWith(
       [[expect.anything()], [expect.anything()]],
@@ -151,32 +151,38 @@ describe('Game', () => {
     game.registerSystems([EmitterSystem, OnHelloSystem])
     game.start(() => {})
 
-    tick()
+    tick(0)
     expect(OnHelloSystem.process).not.toHaveBeenCalled()
 
     game.emit('hello')
 
-    tick()
+    tick(1000)
     expect(OnHelloSystem.process).toHaveBeenCalledWith(
       [],
-      { type: 'hello', timeDelta: expect.anything() },
+      { type: 'hello', timeDelta: 1 },
       game
     )
   })
 
   test('emit works with simple events', () => {
-    const game = new Game()
+    const game = new Game(onTick)
     expect(game.events).toEqual([])
+    game.start(() => {})
+
+    tick(0)
 
     game.emit('customevent')
     expect(game.events).toEqual([
+      expect.anything(),
       { type: 'customevent', timeDelta: 0 }
     ])
 
+    tick(1000)
+
     game.emit('customevent')
     expect(game.events).toEqual([
-      { type: 'customevent', timeDelta: 0 },
-      { type: 'customevent', timeDelta: expect.anything() }
+      expect.anything(),
+      { type: 'customevent', timeDelta: 1 }
     ])
   })
 
