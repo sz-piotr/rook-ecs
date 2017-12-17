@@ -157,6 +157,36 @@ describe('Game', () => {
     game.emit('hello')
 
     tick()
-    expect(OnHelloSystem.process).toHaveBeenCalled()
+    expect(OnHelloSystem.process).toHaveBeenCalledWith(
+      [],
+      { type: 'hello', timeDelta: expect.anything() },
+      game
+    )
+  })
+
+  test('emit works with simple events', () => {
+    const game = new Game()
+    expect(game.events).toEqual([])
+
+    game.emit('customevent')
+    expect(game.events).toEqual([
+      { type: 'customevent', timeDelta: 0 }
+    ])
+
+    game.emit('customevent')
+    expect(game.events).toEqual([
+      { type: 'customevent', timeDelta: 0 },
+      { type: 'customevent', timeDelta: expect.anything() }
+    ])
+  })
+
+  test('emit works with complex events', () => {
+    const game = new Game()
+    expect(game.events).toEqual([])
+
+    game.emit({ type: 'customevent', x: 1 })
+    expect(game.events).toEqual([
+      { type: 'customevent', x: 1, timeDelta: 0 }
+    ])
   })
 })

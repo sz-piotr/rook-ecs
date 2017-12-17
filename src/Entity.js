@@ -6,8 +6,6 @@ let index = 0
 export class Entity {
   constructor (componentCount, onKeyChanged) {
     this.id = index++
-    this.prev = null
-    this.next = null
 
     this.key = new Key(componentCount)
     this._components = makeNullArray(componentCount)

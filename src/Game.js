@@ -4,13 +4,15 @@ import { createComponent } from './component'
 
 export class Game {
   constructor (registerUpdate = onAnimationFrame) {
-    this.entities = null
     this.changed = []
     this.removed = []
 
     this.systems = []
     this.queries = []
-    this.events = ['tick']
+
+    this.events = []
+    this.eventTimes = {}
+
     this.componentCount = 0
 
     this.started = false
@@ -32,9 +34,7 @@ export class Game {
 
     const unifiedSystem = {
       query: system.query || [],
-      on: Array.isArray(system.on)
-        ? system.on
-        : [system.on || 'tick'],
+      on: system.on,
       process: system.process || createProcess(system.processEntity)
     }
 
@@ -56,24 +56,29 @@ export class Game {
 
     init(this)
 
-    let lastTime = Date.now()
-    this.registerUpdate(() => {
-      const now = Date.now()
-      this._update((now - lastTime) / 1000)
-      lastTime = now
-    })
+    this.registerUpdate(() => this._update())
   }
 
   _update (timeDelta) {
-    this.events.length = 1
-    forEach(this.systems, system => this._runSystem(system, timeDelta))
+    this.events.length = 0
+    this.emit('tick')
+    forEach(this.systems, system => this._runSystem(system))
   }
 
   _runSystem (system, timeDelta) {
-    if (overlap(system.on, this.events)) {
+    const events = this._getEventsFor(system)
+    forEach(events, event => {
       this._handleChanges()
       const entities = getEntities(system.query)
-      system.process(entities, timeDelta, this)
+      system.process(entities, event, this)
+    })
+  }
+
+  _getEventsFor (system) {
+    if (!system.on) {
+      return [this.events[0]]
+    } else {
+      return this.events.filter(event => event.type === system.on)
     }
   }
 
@@ -87,49 +92,30 @@ export class Game {
 
   createEntity () {
     assert(this.started, 'Entities cannot be created before the game is started.')
-    const entity = new Entity(this.componentCount, this.onEntityChange)
-
-    entity.next = this.entities
-    if (this.entities !== null) {
-      this.entities.prev = entity
-    }
-    this.entities = entity
-
-    return entity
+    return new Entity(this.componentCount, this.onEntityChange)
   }
 
   removeEntity (entity) {
     assert(this.started, 'Entities cannot be removed before the game is started.')
-
-    const next = entity.next
-    const prev = entity.prev
-
-    if (next !== null) {
-      next.prev = entity.prev
-    }
-    if (prev !== null) {
-      prev.next = entity.next
-    }
-
-    entity.next = null
-    entity.prev = null
-
-    if (this.entities === entity) {
-      this.entities = next
-    }
-
     this.removed.push(entity)
   }
 
   emit (event) {
+    if (typeof event === 'string') {
+      event = { type: event }
+    }
+    const now = Date.now()
+    const lastTime = this.eventTimes[event] || now
+    event.timeDelta = now - lastTime
+    this.eventTimes[event] = now
     this.events.push(event)
   }
 }
 
 function createProcess (processEntity) {
-  return function (entities, timeDelta, game) {
+  return function (entities, event, game) {
     for (let i = 0; i < entities.length; ++i) {
-      processEntity(entities[i], timeDelta, game)
+      processEntity(entities[i], event, game)
     }
   }
 }
@@ -156,8 +142,4 @@ function onAnimationFrame (callback) {
     window.requestAnimationFrame(update)
     callback()
   }
-}
-
-function overlap (a, b) {
-  return a.some(x => b.indexOf(x) !== -1)
 }
