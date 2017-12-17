@@ -195,4 +195,11 @@ describe('Game', () => {
       { type: 'customevent', x: 1, timeDelta: 0 }
     ])
   })
+
+  test('createEntity works with assemblages', () => {
+    const assemblage = jest.fn()
+    const game = new Game(onTick)
+    game.start(game => game.createEntity(assemblage))
+    expect(assemblage).toHaveBeenCalled()
+  })
 })

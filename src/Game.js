@@ -3,6 +3,8 @@ import { assert, map, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
 import { defaultTicker } from './ticker'
 
+const doNothing = () => {}
+
 export class Game {
   constructor (registerUpdate = defaultTicker) {
     this.changed = []
@@ -93,9 +95,11 @@ export class Game {
     this.removed.length = 0
   }
 
-  createEntity () {
+  createEntity (assemblage = doNothing) {
     assert(this.started, 'Entities cannot be created before the game is started.')
-    return new Entity(this.componentCount, this.onEntityChange)
+    const entity = new Entity(this.componentCount, this.onEntityChange)
+    assemblage(entity)
+    return entity
   }
 
   removeEntity (entity) {
