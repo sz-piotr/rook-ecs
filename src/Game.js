@@ -1,6 +1,6 @@
 import { Entity } from './Entity'
 import { Events } from './Events'
-import { QueryArray } from './Query'
+import { unifyQuery } from './Query'
 import { assert, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
 import { defaultTicker } from './ticker'
@@ -41,21 +41,18 @@ export class Game {
   registerSystem (system) {
     assert(!this._started, 'Cannot register systems after the game was started.')
 
+    const query = unifyQuery(system.query)
+
     this._systems.push({
-      query: unifyQuery(system.query),
+      query,
       on: system.on || 'tick',
       process: system.process || createProcess(system.processEntity)
     })
 
-    this._registerQuery(system.query)
-  }
-
-  _registerQuery (query) {
-    if (Array.isArray(query)) {
-      forEach(query, subQuery => this._queries.push(subQuery))
-    } else if (query) {
-      this._queries.push(query)
-    }
+    forEach(
+      query.subQueries,
+      subQuery => this._queries.push(subQuery)
+    )
   }
 
   start (init) {
@@ -109,12 +106,6 @@ export class Game {
   _emit (event) {
     this._events.emit(event, this._time)
   }
-}
-
-function unifyQuery (query) {
-  return Array.isArray(query)
-    ? new QueryArray(query)
-    : query || { entities: [] }
 }
 
 function createProcess (processEntity) {

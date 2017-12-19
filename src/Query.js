@@ -7,6 +7,7 @@ export class Query {
     this._entities = new IndexedArray()
     this._one = false
 
+    this.subQueries = [this]
     this.key = new Key(maxId(components) + 1)
     forEach(components, ({ id }) => this.key.set(id))
   }
@@ -44,12 +45,23 @@ function maxId (components) {
   return maxId
 }
 
-export class QueryArray {
+class QueryArray {
   constructor (queries) {
-    this.queries = queries
+    this.subQueries = queries
   }
 
   get entities () {
-    return map(this.queries, query => query.entities)
+    return map(this.subQueries, query => query.entities)
   }
+}
+
+const emptyQuery = {
+  entities: [],
+  subQueries: []
+}
+
+export function unifyQuery (query = emptyQuery) {
+  return Array.isArray(query)
+    ? new QueryArray(query)
+    : query
 }
