@@ -1,6 +1,6 @@
 import { Key } from './Key'
 import { IndexedArray } from './IndexedArray'
-import { forEach } from './utils'
+import { forEach, map } from './utils'
 
 export class Query {
   constructor (...components) {
@@ -42,4 +42,14 @@ function maxId (components) {
   let maxId = 0
   forEach(components, ({ id }) => id > maxId && (maxId = id))
   return maxId
+}
+
+export class QueryArray {
+  constructor (queries) {
+    this.queries = queries
+  }
+
+  get entities () {
+    return map(this.queries, query => query.entities)
+  }
 }

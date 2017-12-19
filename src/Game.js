@@ -1,32 +1,37 @@
 import { Entity } from './Entity'
 import { Events } from './Events'
-import { assert, map, forEach, forEach2 } from './utils'
+import { QueryArray } from './Query'
+import { assert, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
 import { defaultTicker } from './ticker'
 
-const doNothing = () => {}
-
 export class Game {
-  constructor (registerUpdate = defaultTicker) {
-    this.changed = []
-    this.removed = []
+  constructor (onTick = defaultTicker) {
+    this._changed = []
+    this._removed = []
 
-    this.systems = []
-    this.queries = []
+    this._systems = []
+    this._queries = []
 
     this._events = new Events()
 
-    this.componentCount = 0
+    this._componentCount = 0
 
-    this.started = false
-    this.runtime = 0
-    this.registerUpdate = registerUpdate
-    this.onEntityChange = entity => this.changed.push(entity)
+    this._started = false
+    this._time = 0
+    this._onTick = onTick
+    this._onEntityChange = entity => this._changed.push(entity)
+
+    this._proxy = {
+      createEntity: assemblage => this._createEntity(assemblage),
+      removeEntity: entity => this._removeEntity(entity),
+      emit: event => this._emit(event)
+    }
   }
 
   createComponent (...fields) {
-    assert(!this.started, 'Cannot create component after the game was started.')
-    return createComponent(fields, this.componentCount++)
+    assert(!this._started, 'Cannot create component after the game was started.')
+    return createComponent(fields, this._componentCount++)
   }
 
   registerSystems (systems) {
@@ -34,74 +39,82 @@ export class Game {
   }
 
   registerSystem (system) {
-    assert(!this.started, 'Cannot register systems after the game was started.')
+    assert(!this._started, 'Cannot register systems after the game was started.')
 
-    const unifiedSystem = {
-      query: system.query || [],
+    this._systems.push({
+      query: unifyQuery(system.query),
       on: system.on || 'tick',
       process: system.process || createProcess(system.processEntity)
-    }
+    })
 
-    this.systems.push(unifiedSystem)
     this._registerQuery(system.query)
   }
 
   _registerQuery (query) {
     if (Array.isArray(query)) {
-      forEach(query, subQuery => this.queries.push(subQuery))
+      forEach(query, subQuery => this._queries.push(subQuery))
     } else if (query) {
-      this.queries.push(query)
+      this._queries.push(query)
     }
   }
 
   start (init) {
-    assert(!this.started, 'A game can only be started once!')
-    this.started = true
+    assert(!this._started, 'A game can only be started once!')
+    this._started = true
 
-    init(this)
+    init(this._proxy)
 
-    this.registerUpdate(timeDelta => this._update(timeDelta))
+    this._onTick(timeDelta => this._update(timeDelta))
   }
 
   _update (timeDelta) {
-    this.runtime += timeDelta
+    this._time += timeDelta
     this._events.length = 0
-    this.emit('tick')
-    forEach(this.systems, system => this._runSystem(system))
+    this._emit('tick')
+    forEach(this._systems, system => this._runSystem(system))
   }
 
   _runSystem (system, timeDelta) {
-    const events = this._events.get(system.on)
-    forEach(events, event => {
-      this._handleChanges()
-      const entities = getEntities(system.query)
-      system.process(entities, event, this)
-    })
+    forEach(
+      this._events.get(system.on),
+      event => {
+        this._handleChanges()
+        system.process(system.query.entities, event, this._proxy)
+      }
+    )
   }
 
   _handleChanges () {
-    forEach2(this.changed, this.queries, handleEntityChange)
-    this.changed.length = 0
+    forEach2(this._changed, this._queries, handleEntityChange)
+    this._changed.length = 0
 
-    forEach2(this.removed, this.queries, handleEntityRemove)
-    this.removed.length = 0
+    forEach2(this._removed, this._queries, handleEntityRemove)
+    this._removed.length = 0
   }
 
-  createEntity (assemblage = doNothing) {
-    assert(this.started, 'Entities cannot be created before the game is started.')
-    const entity = new Entity(this.componentCount, this.onEntityChange)
-    assemblage(entity)
+  _createEntity (assemblage) {
+    assert(this._started, 'Entities cannot be created before the game is started.')
+    const entity = new Entity(this._componentCount, this._onEntityChange)
+    if (assemblage) {
+      assemblage(entity)
+    }
     return entity
   }
 
-  removeEntity (entity) {
-    assert(this.started, 'Entities cannot be removed before the game is started.')
-    this.removed.push(entity)
+  _removeEntity (entity) {
+    assert(this._started, 'Entities cannot be removed before the game is started.')
+    this._removed.push(entity)
   }
 
-  emit (event) {
-    this._events.emit(event, this.runtime)
+  _emit (event) {
+    this._events.emit(event, this._time)
   }
+}
+
+function unifyQuery (query) {
+  return Array.isArray(query)
+    ? new QueryArray(query)
+    : query || { entities: [] }
 }
 
 function createProcess (processEntity) {
@@ -109,14 +122,6 @@ function createProcess (processEntity) {
     for (let i = 0; i < entities.length; ++i) {
       processEntity(entities[i], event, game)
     }
-  }
-}
-
-function getEntities (query) {
-  if (Array.isArray(query)) {
-    return map(query, subQuery => subQuery.entities)
-  } else {
-    return query.entities
   }
 }
 
