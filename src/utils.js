@@ -6,6 +6,17 @@ export function map (array, fn) {
   return result
 }
 
+export function filter (array, fn) {
+  let result = []
+  for (let i = 0; i < array.length; i++) {
+    let value = array[i]
+    if (fn(value)) {
+      result.push(value)
+    }
+  }
+  return result
+}
+
 export function forEach (array, fn) {
   for (let i = 0; i < array.length; i++) {
     fn(array[i])
@@ -25,8 +36,4 @@ export function assert (condition, errorMessage) {
   if (!condition) {
     throw new Error(errorMessage)
   }
-}
-
-export function xor (a, b) {
-  return (a || b) && !(a && b)
 }

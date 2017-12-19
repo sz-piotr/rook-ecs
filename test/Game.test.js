@@ -134,21 +134,12 @@ describe('Game', () => {
   it('can run a system listening for events', () => {
     const game = new Game(onTick)
 
-    let i = 0
-    const EmitterSystem = {
-      process (entities, timeDelta, game) {
-        if (i++ === 1) {
-          game.emit('hello')
-        }
-      }
-    }
-
     const OnHelloSystem = {
       on: 'hello',
       process: jest.fn()
     }
 
-    game.registerSystems([EmitterSystem, OnHelloSystem])
+    game.registerSystems([OnHelloSystem])
     game.start(() => {})
 
     tick(0)
@@ -157,43 +148,7 @@ describe('Game', () => {
     game.emit('hello')
 
     tick(1000)
-    expect(OnHelloSystem.process).toHaveBeenCalledWith(
-      [],
-      { type: 'hello', timeDelta: 1 },
-      game
-    )
-  })
-
-  test('emit works with simple events', () => {
-    const game = new Game(onTick)
-    expect(game.events).toEqual([])
-    game.start(() => {})
-
-    tick(0)
-
-    game.emit('customevent')
-    expect(game.events).toEqual([
-      expect.anything(),
-      { type: 'customevent', timeDelta: 0 }
-    ])
-
-    tick(1000)
-
-    game.emit('customevent')
-    expect(game.events).toEqual([
-      expect.anything(),
-      { type: 'customevent', timeDelta: 1 }
-    ])
-  })
-
-  test('emit works with complex events', () => {
-    const game = new Game()
-    expect(game.events).toEqual([])
-
-    game.emit({ type: 'customevent', x: 1 })
-    expect(game.events).toEqual([
-      { type: 'customevent', x: 1, timeDelta: 0 }
-    ])
+    expect(OnHelloSystem.process).toHaveBeenCalled()
   })
 
   test('createEntity works with assemblages', () => {

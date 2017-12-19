@@ -1,4 +1,5 @@
 import { Entity } from './Entity'
+import { Events } from './Events'
 import { assert, map, forEach, forEach2 } from './utils'
 import { createComponent } from './component'
 import { defaultTicker } from './ticker'
@@ -13,8 +14,7 @@ export class Game {
     this.systems = []
     this.queries = []
 
-    this.events = []
-    this.eventTimes = {}
+    this._events = new Events()
 
     this.componentCount = 0
 
@@ -30,15 +30,15 @@ export class Game {
   }
 
   registerSystems (systems) {
-    forEach(systems, system => this._registerSystem(system))
+    forEach(systems, system => this.registerSystem(system))
   }
 
-  _registerSystem (system) {
+  registerSystem (system) {
     assert(!this.started, 'Cannot register systems after the game was started.')
 
     const unifiedSystem = {
       query: system.query || [],
-      on: system.on,
+      on: system.on || 'tick',
       process: system.process || createProcess(system.processEntity)
     }
 
@@ -65,26 +65,18 @@ export class Game {
 
   _update (timeDelta) {
     this.runtime += timeDelta
-    this.events.length = 0
+    this._events.length = 0
     this.emit('tick')
     forEach(this.systems, system => this._runSystem(system))
   }
 
   _runSystem (system, timeDelta) {
-    const events = this._getEventsFor(system)
+    const events = this._events.get(system.on)
     forEach(events, event => {
       this._handleChanges()
       const entities = getEntities(system.query)
       system.process(entities, event, this)
     })
-  }
-
-  _getEventsFor (system) {
-    if (!system.on) {
-      return [this.events[0]]
-    } else {
-      return this.events.filter(event => event.type === system.on)
-    }
   }
 
   _handleChanges () {
@@ -108,14 +100,7 @@ export class Game {
   }
 
   emit (event) {
-    if (typeof event === 'string') {
-      event = { type: event }
-    }
-    const now = this.runtime
-    const lastTime = fallback(this.eventTimes[event.type], now)
-    event.timeDelta = (now - lastTime) / 1000
-    this.eventTimes[event.type] = now
-    this.events.push(event)
+    this._events.emit(event, this.runtime)
   }
 }
 
@@ -125,10 +110,6 @@ function createProcess (processEntity) {
       processEntity(entities[i], event, game)
     }
   }
-}
-
-function fallback (value, fallback) {
-  return value !== undefined ? value : fallback
 }
 
 function getEntities (query) {
