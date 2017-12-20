@@ -66,7 +66,7 @@ export class Game {
 
   _update (timeDelta) {
     this._time += timeDelta
-    this._events.length = 0
+    this._events.clear()
     this._emit('tick')
     forEach(this._systems, system => this._runSystem(system))
   }

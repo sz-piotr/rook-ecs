@@ -122,20 +122,20 @@ describe('Game', () => {
     expect(System.process).toHaveBeenCalled()
   })
 
-  it('can run a system listening for events', () => {
-    const game = new Game(onTick)
+  // it('can run a system listening for events', () => {
+  //   const game = new Game(onTick)
 
-    const OnHelloSystem = {
-      on: 'hello',
-      process: jest.fn()
-    }
+  //   const OnHelloSystem = {
+  //     on: 'hello',
+  //     process: jest.fn()
+  //   }
 
-    game.registerSystems([OnHelloSystem])
-    game.start(game => game.emit('hello'))
+  //   game.registerSystems([OnHelloSystem])
+  //   game.start(game => game.emit('hello'))
 
-    tick(0)
-    expect(OnHelloSystem.process).toHaveBeenCalled()
-  })
+  //   tick(0)
+  //   expect(OnHelloSystem.process).toHaveBeenCalled()
+  // })
 
   test('createEntity works with assemblages', () => {
     const assemblage = jest.fn()
