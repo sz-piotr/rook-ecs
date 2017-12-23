@@ -122,25 +122,65 @@ describe('Game', () => {
     expect(System.process).toHaveBeenCalled()
   })
 
-  // it('can run a system listening for events', () => {
-  //   const game = new Game(onTick)
+  it('can run a system listening for events', () => {
+    const game = new Game(onTick)
 
-  //   const OnHelloSystem = {
-  //     on: 'hello',
-  //     process: jest.fn()
-  //   }
+    const HelloSystem = {
+      process (entities, event, game) {
+        game.emit('hello')
+      }
+    }
 
-  //   game.registerSystems([OnHelloSystem])
-  //   game.start(game => game.emit('hello'))
+    const OnHelloSystem = {
+      on: 'hello',
+      process: jest.fn()
+    }
 
-  //   tick(0)
-  //   expect(OnHelloSystem.process).toHaveBeenCalled()
-  // })
+    game.registerSystems([HelloSystem, OnHelloSystem])
+    game.start(() => {})
+
+    tick(0)
+
+    expect(OnHelloSystem.process).toHaveBeenCalled()
+  })
 
   test('createEntity works with assemblages', () => {
     const assemblage = jest.fn()
     const game = new Game(onTick)
     game.start(game => game.createEntity(assemblage))
     expect(assemblage).toHaveBeenCalled()
+  })
+
+  test('entity change is registered', () => {
+    const game = new Game(onTick)
+
+    const A = game.createComponent()
+
+    const addA = {
+      query: new Query(),
+      processEntity (entity) {
+        if (!entity.has(A)) {
+          entity.add(new A())
+        }
+      }
+    }
+
+    let numberOfA = 0
+    const allA = {
+      query: new Query(A),
+      processEntity (entity) {
+        numberOfA++
+      }
+    }
+
+    game.registerSystems([
+      addA,
+      allA
+    ])
+
+    game.start(game => game.createEntity())
+    tick(0)
+
+    expect(numberOfA).toBe(1)
   })
 })

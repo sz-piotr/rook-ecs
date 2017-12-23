@@ -12,6 +12,7 @@ export class Entity {
 
     this._changeAnnounced = false
     this._onKeyChanged = onKeyChanged
+    this._onChange()
   }
 
   add (componentInstance) {

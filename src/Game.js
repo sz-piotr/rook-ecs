@@ -21,10 +21,7 @@ export class Game {
     this._time = 0
     this._onTick = onTick
 
-    this._onEntityChange = entity => {
-      this._changed.push(entity)
-      entity.onChangeRegistered()
-    }
+    this._onEntityChange = entity => this._changed.push(entity)
 
     this._proxy = {
       createEntity: assemblage => this._createEntity(assemblage),
@@ -122,6 +119,7 @@ function createProcess (processEntity) {
 
 function handleEntityChange (entity, query) {
   query.onChange(entity)
+  entity.onChangeRegistered()
 }
 
 function handleEntityRemove (entity, query) {
