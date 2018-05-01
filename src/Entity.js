@@ -1,4 +1,4 @@
-import { assert } from './utils'
+import { assert } from './assert'
 
 export class Entity {
   constructor (registerChange) {

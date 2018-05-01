@@ -1,5 +1,3 @@
-import { filter } from './utils'
-
 export class Events {
   constructor () {
     this._events = []
@@ -17,7 +15,9 @@ export class Events {
   }
 
   get (eventType) {
-    return filter(this._events, e => e.type === eventType)
+    return this._events.filter(
+      event => event.type === eventType
+    )
   }
 
   clear () {

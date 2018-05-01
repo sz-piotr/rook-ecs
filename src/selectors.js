@@ -1,4 +1,4 @@
-import { assert } from './utils'
+import { assert } from './assert'
 
 export function hasAll (...components) {
   assert(components.every(isComponent), 'hasAll :: All arguments must be components.')
