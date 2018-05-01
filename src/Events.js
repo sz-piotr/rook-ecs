@@ -8,7 +8,10 @@ export class Events {
     if (typeof event === 'string') {
       event = { type: event }
     }
-    const lastTime = safeGet(this._eventTimes[event.type], time)
+    const lastTime = this._eventTimes[event.type] != null
+      ? this._eventTimes[event.type]
+      : time
+
     event.timeDelta = (time - lastTime) / 1000
     this._eventTimes[event.type] = time
     this._events.push(event)
@@ -23,8 +26,4 @@ export class Events {
   clear () {
     this._events.length = 0
   }
-}
-
-function safeGet (value, fallback) {
-  return value !== undefined ? value : fallback
 }
