@@ -1,71 +1,55 @@
-import { Key } from './Key'
 import { assert } from './utils'
 
-let index = 0
-
 export class Entity {
-  constructor (componentCount, onKeyChanged) {
-    this.id = index++
-
-    this.key = new Key(componentCount)
-    this._components = makeNullArray(componentCount)
-
-    this._changeAnnounced = false
-    this._onKeyChanged = onKeyChanged
-    this._onChange()
+  constructor (registerChange) {
+    this._components = Object.create(null)
+    this._changeRegistered = false
+    this._registerChange = registerChange
   }
 
-  add (componentInstance) {
-    const index = componentInstance._id
+  add (instance) {
+    assert(instance != null, `Entity.add :: Argument is ${instance}.`)
 
-    assert(!this._components[index], 'Cannot add another instance of the same component.')
-    assert(index < this._components.length, 'Unknown component passed as argument.')
+    const Component = instance.constructor
 
-    this.key.setBit(index, true)
-    this._components[index] = componentInstance
+    assert(Component && Component.id, 'Entity.add :: Argument is not a component instance.')
+    assert(!this._components[Component.id], `Entity.add :: Component "${Component.id}" is already present.`)
 
+    this._components[Component.id] = instance
     this._onChange()
+
     return this
   }
 
   has (Component) {
+    assert(Component && Component.id, 'Entity.has :: Argument is not a component.')
     return !!this._components[Component.id]
   }
 
   get (Component) {
+    assert(Component && Component.id, 'Entity.get :: Argument is not a component.')
     const component = this._components[Component.id]
-    assert(component, 'Requested component is not present.')
+    assert(component, `Entity.get :: Component "${Component.id}" is not present.`)
     return component
   }
 
   remove (Component) {
-    const index = Component.id
-    const component = this._components[index]
+    assert(Component && Component.id, 'Entity.remove :: Argument is not a component.')
 
-    assert(component, 'Cannot remove component instance, because it doesn\'t  exist on target entity.')
-
-    this.key.unset(index)
-    this._components[index] = null
+    this._components[Component.id] = undefined
     this._onChange()
+
     return this
   }
 
   _onChange () {
-    if (!this._changeAnnounced) {
-      this._onKeyChanged(this)
+    if (!this._changeRegistered) {
+      this._registerChange(this)
     }
-    this._changeAnnounced = true
+    this._changeRegistered = true
   }
 
-  onChangeRegistered () {
-    this._changeAnnounced = false
+  _onChangeRegistered () {
+    this._changeRegistered = false
   }
-}
-
-function makeNullArray (size) {
-  const array = []
-  for (let i = 0; i < size; i++) {
-    array[i] = null
-  }
-  return array
 }
