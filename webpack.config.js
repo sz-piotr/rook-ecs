@@ -1,11 +1,7 @@
 const path = require('path')
-const webpack = require('webpack')
 const packageJSON = require('./package')
 
-const isProduction = process.env.npm_lifecycle_event === 'build'
-
 const config = {
-  entry: './src/index.js',
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'lib'),
@@ -22,14 +18,7 @@ const config = {
         loader: 'babel-loader'
       }
     }]
-  },
-  plugins: []
-}
-
-if (!isProduction) {
-  config.plugins = config.plugins.concat([
-    new webpack.optimize.ModuleConcatenationPlugin()
-  ])
+  }
 }
 
 module.exports = config
