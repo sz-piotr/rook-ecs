@@ -12,7 +12,7 @@ export class Events {
       ? this._eventTimes[event.type]
       : time
 
-    event.timeDelta = (time - lastTime) / 1000
+    event.timeDelta = time - lastTime
     this._eventTimes[event.type] = time
     this._events.push(event)
   }

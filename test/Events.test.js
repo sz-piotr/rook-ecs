@@ -30,7 +30,7 @@ describe('Events', () => {
   it('can calculate time between events', () => {
     let events = new Events()
     events.emit('T', 0)
-    events.emit('T', 1000)
+    events.emit('T', 1)
 
     expect(events.get('T')).toEqual([
       { type: 'T', timeDelta: 0 },
