@@ -2,10 +2,12 @@
   "presets": [
     ["env", {
       "modules": false,
-      "browsers": [
-        "> 5%",
-        "not ie"
-      ]
+      "targets": {
+        "browsers": [
+          "last 2 versions",
+          "not dead"
+        ]
+      }
     }]
   ],
   "env": {
