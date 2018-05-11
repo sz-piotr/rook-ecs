@@ -8,12 +8,12 @@ export class Entity {
   }
 
   add (instance) {
-    assert(instance != null, `Entity.add :: Argument is ${instance}.`)
+    assert(instance != null, 'Entity.add :: Argument is not a component instance.')
 
     const Component = instance.constructor
 
     assert(Component && Component.id, 'Entity.add :: Argument is not a component instance.')
-    assert(!this._components[Component.id], `Entity.add :: Component "${Component.id}" is already present.`)
+    assert(!this._components[Component.id], 'Entity.add :: Component already present.')
 
     this._components[Component.id] = instance
     this._onChange()
@@ -29,7 +29,7 @@ export class Entity {
   get (Component) {
     assert(Component && Component.id, 'Entity.get :: Argument is not a component.')
     const component = this._components[Component.id]
-    assert(component, `Entity.get :: Component "${Component.id}" is not present.`)
+    assert(component, 'Entity.get :: Component not present.')
     return component
   }
 
