@@ -1,2 +1,2 @@
 export { Game } from './Game'
-export { Query } from './Query'
+export { hasAll, hasAny } from './selectors'

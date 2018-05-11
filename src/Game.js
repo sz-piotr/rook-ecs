@@ -1,127 +1,84 @@
-import { Entity } from './Entity'
 import { Events } from './Events'
-import { unifyQuery } from './Query'
-import { assert, forEach, forEach2 } from './utils'
-import { createComponent } from './component'
-import { defaultTicker } from './ticker'
+import { Query } from './Query'
+import { assert } from './assert'
+import { World } from './World'
 
 export class Game {
-  constructor (onTick = defaultTicker) {
-    this._changed = []
-    this._removed = []
-
+  constructor () {
     this._systems = []
     this._queries = []
-
     this._events = new Events()
 
-    this._componentCount = 0
+    this._changedEntities = []
+    this._removedEntities = []
+    this._onEntityChange = entity => this._changedEntities.push(entity)
 
-    this._started = false
-    this._time = 0
-    this._onTick = onTick
-
-    this._onEntityChange = entity => this._changed.push(entity)
-
-    this._proxy = {
-      createEntity: assemblage => this._createEntity(assemblage),
-      removeEntity: entity => this._removeEntity(entity),
-      emit: event => this._emit(event)
-    }
-  }
-
-  createComponent (...fields) {
-    assert(!this._started, 'Cannot create component after the game was started.')
-    return createComponent(fields, this._componentCount++)
+    this._time = null
+    this._world = new World(this)
   }
 
   registerSystems (systems) {
-    forEach(systems, system => this.registerSystem(system))
-  }
-
-  registerSystem (system) {
-    assert(!this._started, 'Cannot register systems after the game was started.')
-
-    const query = unifyQuery(system.query)
-
-    this._systems.push({
-      query,
+    this._systems = systems.map(system => ({
+      query: system.query && new Query(system.query),
       on: system.on || 'tick',
       process: system.process || createProcess(system.processEntity)
-    })
-
-    forEach(
-      query.subQueries,
-      subQuery => this._queries.push(subQuery)
-    )
+    }))
+    this._queries = this._systems
+      .map(system => system.query)
+      .filter(query => !!query)
   }
 
-  start (init) {
-    assert(!this._started, 'A game can only be started once!')
-    this._started = true
-
-    init(this._proxy)
-
-    this._onTick(timeDelta => this._update(timeDelta))
+  init (time, callback) {
+    assert(this._time === null, 'Game.init :: Game can only be initialized once.')
+    this._time = time
+    callback(this._world)
   }
 
-  _update (timeDelta) {
-    this._time += timeDelta
+  update (time) {
+    const timeDelta = time - this._time
+    this._time = time
+
     this._events.clear()
-    this._emit('tick')
-    forEach(this._systems, system => this._runSystem(system))
+    this._events.emit('tick', this._time)
+
+    this._runSystems(timeDelta)
   }
 
-  _runSystem (system, timeDelta) {
-    forEach(
-      this._events.get(system.on),
-      event => {
+  _runSystems (timeDelta) {
+    for (const system of this._systems) {
+      for (const event of this._events.get(system.on)) {
         this._handleChanges()
-        system.process(system.query.entities, event, this._proxy)
+        system.process(
+          system.query && system.query.entities,
+          event,
+          this._world
+        )
       }
-    )
+    }
   }
 
   _handleChanges () {
-    forEach2(this._changed, this._queries, handleEntityChange)
-    this._changed.length = 0
-
-    forEach2(this._removed, this._queries, handleEntityRemove)
-    this._removed.length = 0
-  }
-
-  _createEntity (assemblage) {
-    assert(this._started, 'Entities cannot be created before the game is started.')
-    const entity = new Entity(this._componentCount, this._onEntityChange)
-    if (assemblage) {
-      assemblage(entity)
+    for (const entity of this._changedEntities) {
+      for (const query of this._queries) {
+        query.onChange(entity)
+      }
+      entity._onChangeRegistered()
     }
-    return entity
-  }
+    this._changedEntities.length = 0
 
-  _removeEntity (entity) {
-    assert(this._started, 'Entities cannot be removed before the game is started.')
-    this._removed.push(entity)
-  }
-
-  _emit (event) {
-    this._events.emit(event, this._time)
+    for (const entity of this._removedEntities) {
+      for (const query of this._queries) {
+        query.onRemove(entity)
+      }
+    }
+    this._removedEntities.length = 0
   }
 }
 
 function createProcess (processEntity) {
   return function (entities, event, game) {
-    for (let i = 0; i < entities.length; ++i) {
-      processEntity(entities[i], event, game)
+    for (const entity of entities) {
+      processEntity(entity, event, game)
     }
   }
-}
-
-function handleEntityChange (entity, query) {
-  query.onChange(entity)
-  entity.onChangeRegistered()
-}
-
-function handleEntityRemove (entity, query) {
-  query.onRemove(entity)
 }
