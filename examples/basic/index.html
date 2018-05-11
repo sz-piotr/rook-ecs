@@ -12,7 +12,7 @@
 
     <script src="../../lib/ouyo.js"></script>
     <script>
-      const { Game, Query } = OUYO
+      const { Game, hasAll } = OUYO
 
       const canvas = document.getElementById('canvas')
       const fpsCounter = document.getElementById('fps')
@@ -26,70 +26,85 @@
 
       const game = new Game()
 
-      const PositionComponent = game.createComponent('x', 'y')
-      const VelocityComponent = game.createComponent('x', 'y')
-      const RectangleComponent = game.createComponent('width', 'height', 'color')
+      function Transform (x, y) {
+        this.x = x
+        this.y = y
+      }
+      Transform.id = 'Transform'
 
-      const MovementSystem = {
-        query: new Query(PositionComponent, VelocityComponent),
+      function Velocity (x, y) {
+        this.x = x
+        this.y = y
+      }
+      Velocity.id = 'Velocity'
+
+      function Rectangle (width, height, color) {
+        this.width = width
+        this.height = height
+        this.color = color
+      }
+      Rectangle.id = 'Rectangle'
+
+      const applyVelocity = {
+        query: hasAll(Transform, Velocity),
         processEntity(entity, event) {
-          const position = entity.get(PositionComponent)
-          const velocity = entity.get(VelocityComponent)
+          const transform = entity.get(Transform)
+          const velocity = entity.get(Velocity)
 
-          position.x += velocity.x * event.timeDelta
-          position.y += velocity.y * event.timeDelta
+          transform.x += velocity.x * event.timeDelta
+          transform.y += velocity.y * event.timeDelta
         }
       }
 
-      const BounceSystem = {
-        query: new Query(PositionComponent, RectangleComponent, VelocityComponent),
+      const bounceOfEdges = {
+        query: hasAll(Transform, Rectangle, Velocity),
         processEntity(entity) {
-          const position = entity.get(PositionComponent)
-          const rectangle = entity.get(RectangleComponent)
-          const velocity = entity.get(VelocityComponent)
+          const transform = entity.get(Transform)
+          const rectangle = entity.get(Rectangle)
+          const velocity = entity.get(Velocity)
 
-          if(position.x < 0) {
+          if(transform.x < 0) {
             velocity.x = -velocity.x
-            position.x = -position.x
+            transform.x = -transform.x
           }
 
-          if(position.x + rectangle.width > WIDTH) {
+          if(transform.x + rectangle.width > WIDTH) {
             velocity.x = -velocity.x
-            position.x = 2 * (WIDTH - rectangle.width) - position.x
+            transform.x = 2 * (WIDTH - rectangle.width) - transform.x
           }
 
-          if(position.y < 0) {
+          if(transform.y < 0) {
             velocity.y = -velocity.y
-            position.y = -position.y
+            transform.y = -transform.y
           }
 
-          if(position.y + rectangle.height > HEIGHT) {
+          if(transform.y + rectangle.height > HEIGHT) {
             velocity.y = -velocity.y
-            position.y = 2 * (HEIGHT - rectangle.height) - position.y
+            transform.y = 2 * (HEIGHT - rectangle.height) - transform.y
           }
         }
       }
 
-      const ClearScreenSystem = {
+      const clearScreen = {
         process() {
           ctx.fillStyle = 'black'
           ctx.fillRect(0, 0, WIDTH, HEIGHT)
         }
       }
 
-      const RectangleRenderSystem = {
-        query: new Query(PositionComponent, RectangleComponent),
+      const renderRectangles = {
+        query: hasAll(Transform, Rectangle),
         processEntity(entity) {
-          const position = entity.get(PositionComponent)
-          const rectangle = entity.get(RectangleComponent)
+          const transform = entity.get(Transform)
+          const rectangle = entity.get(Rectangle)
 
           ctx.fillStyle = rectangle.color
-          ctx.fillRect(position.x, position.y, rectangle.width, rectangle.height)
+          ctx.fillRect(transform.x, transform.y, rectangle.width, rectangle.height)
         }
       }
 
       const lastFrames = []
-      const FpsSystem = {
+      const showFps = {
         process(entities, event) {
           if(lastFrames.length === 20) {
             lastFrames.shift()
@@ -103,19 +118,19 @@
       }
 
       game.registerSystems([
-        MovementSystem,
-        BounceSystem,
-        ClearScreenSystem,
-        RectangleRenderSystem,
-        FpsSystem
+        applyVelocity,
+        bounceOfEdges,
+        clearScreen,
+        renderRectangles,
+        showFps
       ])
 
-      game.start(function(game) {
-        for(let i = 0; i < 1000; i++) {
-          game.createEntity()
-            .add(new PositionComponent(random(0, WIDTH), random(0, HEIGHT)))
-            .add(new VelocityComponent(random(-300, 300), random(-300, 300)))
-            .add(new RectangleComponent(random(10, 100), random(10, 100), randomColor()))
+      game.init(Date.now() / 1000, function(world) {
+        for(let i = 0; i < 4000; i++) {
+          world.createEntity()
+            .add(new Transform(random(0, WIDTH), random(0, HEIGHT)))
+            .add(new Velocity(random(-300, 300), random(-300, 300)))
+            .add(new Rectangle(random(10, 100), random(10, 100), randomColor()))
         }
       })
 
@@ -134,6 +149,12 @@
         }
         return color
       }
+
+      function update () {
+        requestAnimationFrame(update)
+        game.update(Date.now() / 1000)
+      }
+      update()
     </script>
   </body>
 </html>
