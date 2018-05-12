@@ -1,8 +1,7 @@
 import { Entity } from './Entity'
 
 export class World {
-  constructor (game) {
-    this._game = game
+  constructor (private _game) {
   }
 
   createEntity (assemblage) {

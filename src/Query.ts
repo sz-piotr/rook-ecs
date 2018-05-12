@@ -1,10 +1,10 @@
 import { assert } from './assert'
 
 export class Query {
-  constructor (selector) {
-    assert(typeof selector === 'function', 'new Query :: selector must be a function')
-    this._selector = selector
-    this.entities = new Set()
+  private entities = new Set()
+
+  constructor (private _selector) {
+    assert(typeof _selector === 'function', 'new Query :: selector must be a function')
   }
 
   onChange (entity) {

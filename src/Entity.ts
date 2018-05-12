@@ -1,10 +1,10 @@
 import { assert } from './assert'
 
 export class Entity {
-  constructor (registerChange) {
-    this._components = Object.create(null)
-    this._changeRegistered = false
-    this._registerChange = registerChange
+  private _components = Object.create(null)
+  private _changeRegistered = false
+
+  constructor (private _registerChange) {
   }
 
   add (instance) {

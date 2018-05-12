@@ -4,18 +4,16 @@ import { assert } from './assert'
 import { World } from './World'
 
 export class Game {
-  constructor () {
-    this._systems = []
-    this._queries = []
-    this._events = new Events()
+  private _systems = []
+  private _queries = []
+  private _events = new Events()
 
-    this._changedEntities = []
-    this._removedEntities = []
-    this._onEntityChange = entity => this._changedEntities.push(entity)
+  private _changedEntities = []
+  private _removedEntities = []
+  private _onEntityChange = entity => this._changedEntities.push(entity)
 
-    this._time = null
-    this._world = new World(this)
-  }
+  private _time = null
+  private _world = new World(this)
 
   registerSystems (systems) {
     this._systems = systems.map(system => ({

@@ -1,8 +1,6 @@
 export class Events {
-  constructor () {
-    this._events = []
-    this._eventTimes = {}
-  }
+  private _events = []
+  private _eventTimes = {}
 
   emit (event, time) {
     if (typeof event === 'string') {
