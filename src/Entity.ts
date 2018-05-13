@@ -1,7 +1,7 @@
-import { Component, ComponentClass } from './Component'
+import { ComponentClass } from './components'
 
 type ComponentMap = {
-  [key: string]: Component | undefined
+  [key: string]: any
 }
 
 let idSequence = 0
@@ -9,15 +9,15 @@ let idSequence = 0
 export class Entity {
   private _components: ComponentMap = Object.create(null)
   private _changeRegistered = false
-  private _registerChange: (entity: Entity) => void
+  private _registerChange?: (entity: Entity) => void
 
   readonly id = idSequence++
 
-  constructor (_registerChange: (entity: Entity) => void) {
+  constructor (_registerChange?: (entity: Entity) => void) {
     this._registerChange = _registerChange
   }
 
-  add (instance: Component) {
+  add (instance: any) {
     if (instance == null) {
       throw new Error('Entity.add :: Argument is not a component instance.')
     }
@@ -44,7 +44,7 @@ export class Entity {
     return !!this._components[componentClass.id]
   }
 
-  get <T extends Component> (componentClass: ComponentClass<T>): T {
+  get <T> (componentClass: ComponentClass<T>): T {
     if (!componentClass || !componentClass.id) {
       throw new Error('Entity.get :: Argument is not a component class.')
     }
@@ -70,7 +70,7 @@ export class Entity {
   }
 
   private _onChange () {
-    if (!this._changeRegistered) {
+    if (!this._changeRegistered && this._registerChange) {
       this._registerChange(this)
       this._changeRegistered = true
     }

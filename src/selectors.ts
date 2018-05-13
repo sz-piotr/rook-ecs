@@ -1,5 +1,5 @@
 import { Entity } from './Entity'
-import { ComponentClass } from './Component'
+import { ComponentClass } from './components'
 
 export type Selector = (entity: Entity) => boolean
 

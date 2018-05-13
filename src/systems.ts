@@ -5,11 +5,11 @@ import { createQuery, Query } from './Query'
 import { Selector } from './selectors'
 
 export type System =
-  BasicSystem |
+  StandardSystem |
   MultiQuerySystem |
   IterativeSystem
 
-export interface BasicSystem {
+export interface StandardSystem {
   query?: Selector,
   on?: string,
   process (entites: Entity[], world: World, event: Event): void
