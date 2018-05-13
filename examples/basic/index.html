@@ -47,12 +47,12 @@
 
       const applyVelocity = {
         query: hasAll(Transform, Velocity),
-        processEntity(entity, event) {
+        processEntity(entity, world, { timeDelta }) {
           const transform = entity.get(Transform)
           const velocity = entity.get(Velocity)
 
-          transform.x += velocity.x * event.timeDelta
-          transform.y += velocity.y * event.timeDelta
+          transform.x += velocity.x * timeDelta
+          transform.y += velocity.y * timeDelta
         }
       }
 
@@ -105,11 +105,11 @@
 
       const lastFrames = []
       const showFps = {
-        process(entities, event) {
+        process(entities, world, { timeDelta }) {
           if(lastFrames.length === 20) {
             lastFrames.shift()
           }
-          lastFrames.push(event.timeDelta)
+          lastFrames.push(timeDelta)
           let avg = 0
           lastFrames.forEach(frame => avg += frame)
           avg /= lastFrames.length
@@ -125,8 +125,8 @@
         showFps
       ])
 
-      game.init(Date.now() / 1000, function(world) {
-        for(let i = 0; i < 4000; i++) {
+      game.init(function(world) {
+        for(let i = 0; i < 1000; i++) {
           world.createEntity()
             .add(new Transform(random(0, WIDTH), random(0, HEIGHT)))
             .add(new Velocity(random(-300, 300), random(-300, 300)))
