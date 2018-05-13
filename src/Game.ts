@@ -1,82 +1,50 @@
-import { Events } from './Events'
+import { Events, Event } from './Events'
 import { Query } from './Query'
 import { assert } from './assert'
-import { World } from './World'
+import { World, GameWorld } from './World'
+import { Entity, notifyAfterChangeRegistered } from './Entity'
+import { System, InternalSystem, toInternalSystem } from './System'
 
 export class Game {
-  private _systems = []
-  private _queries = []
-  private _events = new Events()
+  private _systems: InternalSystem[] = []
+  private _world?: GameWorld
+  private _initialized = false
 
-  private _changedEntities = []
-  private _removedEntities = []
-  private _onEntityChange = entity => this._changedEntities.push(entity)
-
-  private _time = null
-  private _world = new World(this)
-
-  registerSystems (systems) {
-    this._systems = systems.map(system => ({
-      query: system.query && new Query(system.query),
-      on: system.on || 'tick',
-      process: system.process || createProcess(system.processEntity)
-    }))
-    this._queries = this._systems
+  registerSystems (systems: System[]) {
+    this._systems = systems.map(toInternalSystem)
+    const queries = <Query[]> this._systems
       .map(system => system.query)
       .filter(query => !!query)
+    this._world = new GameWorld(queries)
   }
 
-  init (time, callback) {
-    assert(this._time === null, 'Game.init :: Game can only be initialized once.')
-    this._time = time
+  init (callback: (world: World) => void) {
+    if (this._world == null) {
+      throw new Error('Game.init :: Call game.registerSystems first.')
+    }
+
+    if (this._initialized) {
+      throw new Error('Game.init :: Already initialized.')
+    }
+
+    this._initialized = true
     callback(this._world)
   }
 
-  update (time) {
-    const timeDelta = time - this._time
-    this._time = time
+  update (time: number) {
+    if (this._world == null || !this._initialized) {
+      throw new Error('Game.update :: Game has not been initialized.')
+    }
 
-    this._events.clear()
-    this._events.emit('tick', this._time)
+    this._world._internal_tick(time)
 
-    this._runSystems(timeDelta)
-  }
-
-  _runSystems (timeDelta) {
     for (const system of this._systems) {
-      for (const event of this._events.get(system.on)) {
-        this._handleChanges()
-        system.process(
-          system.query && system.query.entities,
-          event,
-          this._world
-        )
+      const events = this._world._internal_getEvents(system.on)
+      for (const event of events) {
+        this._world._internal_handleChanges()
+        const entities = system.query ? system.query.entities : []
+        system.process(entities, this._world, event)
       }
-    }
-  }
-
-  _handleChanges () {
-    for (const entity of this._changedEntities) {
-      for (const query of this._queries) {
-        query.onChange(entity)
-      }
-      entity._onChangeRegistered()
-    }
-    this._changedEntities.length = 0
-
-    for (const entity of this._removedEntities) {
-      for (const query of this._queries) {
-        query.onRemove(entity)
-      }
-    }
-    this._removedEntities.length = 0
-  }
-}
-
-function createProcess (processEntity) {
-  return function (entities, event, game) {
-    for (const entity of entities) {
-      processEntity(entity, event, game)
     }
   }
 }
