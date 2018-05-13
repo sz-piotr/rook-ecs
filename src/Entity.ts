@@ -4,9 +4,12 @@ type ComponentMap = {
   [key: string]: Component | undefined
 }
 
+let idSequence = 0
+
 export class Entity {
   private _components: ComponentMap = Object.create(null)
   private _changeRegistered = false
+  readonly id = idSequence++
 
   constructor (
     private _registerChange: (entity: Entity) => void
@@ -64,14 +67,14 @@ export class Entity {
     return this
   }
 
-  _onChange () {
+  private _onChange () {
     if (!this._changeRegistered) {
       this._registerChange(this)
       this._changeRegistered = true
     }
   }
 
-  _onChangeRegistered () {
+  private _onChangeRegistered () {
     this._changeRegistered = false
   }
 }
