@@ -9,11 +9,13 @@ let idSequence = 0
 export class Entity {
   private _components: ComponentMap = Object.create(null)
   private _changeRegistered = false
+  private _registerChange: (entity: Entity) => void
+
   readonly id = idSequence++
 
-  constructor (
-    private _registerChange: (entity: Entity) => void
-  ) {}
+  constructor (_registerChange: (entity: Entity) => void) {
+    this._registerChange = _registerChange
+  }
 
   add (instance: Component) {
     if (instance == null) {
@@ -73,8 +75,8 @@ export class Entity {
       this._changeRegistered = true
     }
   }
+}
 
-  private _onChangeRegistered () {
-    this._changeRegistered = false
-  }
+export function notifyAfterChangeRegistered (entity: Entity) {
+  (<any>entity)._changeRegistered = true
 }
