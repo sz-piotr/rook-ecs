@@ -1,20 +1,20 @@
-import { Entity } from '../src/Entity'
+import { Entity, notifyAfterChangeRegistered } from '../src/Entity'
 
-class ComponentA {}
-ComponentA.id = 'ComponentA'
+class ComponentA {
+  static id = 'ComponentA'
+}
 
-class ComponentB {}
-ComponentB.id = 'ComponentB'
-
-const NOOP = () => {}
+class ComponentB {
+  static id = 'ComponentB'
+}
 
 describe('Entity', () => {
   it('can be constructed', () => {
-    expect(() => new Entity(NOOP)).not.toThrow()
+    expect(() => new Entity()).not.toThrow()
   })
 
   test('add() should add the component instance', () => {
-    const entity = new Entity(NOOP)
+    const entity = new Entity()
     const instance = new ComponentA()
     entity.add(instance)
 
@@ -22,14 +22,14 @@ describe('Entity', () => {
   })
 
   test('add() should allow only one instance of the same component', () => {
-    const entity = new Entity(NOOP)
+    const entity = new Entity()
 
     expect(() => entity.add(new ComponentA())).not.toThrow()
     expect(() => entity.add(new ComponentA())).toThrow()
   })
 
   test('has() should return correct information', () => {
-    const entity = new Entity(NOOP)
+    const entity = new Entity()
     entity.add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
@@ -37,7 +37,7 @@ describe('Entity', () => {
   })
 
   test('get() should throw if component doesn\'t exist', () => {
-    const entity = new Entity(NOOP)
+    const entity = new Entity()
     entity.add(new ComponentA())
 
     expect(() => entity.get(ComponentA)).not.toThrow()
@@ -45,7 +45,7 @@ describe('Entity', () => {
   })
 
   test('remove() should remove the component', () => {
-    const entity = new Entity(NOOP)
+    const entity = new Entity()
     entity.add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
@@ -68,7 +68,7 @@ describe('Entity', () => {
     entity.remove(ComponentA)
 
     expect(onChange).not.toBeCalled()
-    entity._onChangeRegistered()
+    notifyAfterChangeRegistered(entity)
 
     entity.remove(ComponentB)
 

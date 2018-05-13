@@ -29,7 +29,7 @@ export class SingleQuery {
 
   onChange (entity: Entity) {
     if (this._selector(entity)) {
-      if (!this._indexMap[entity.id]) {
+      if (this._indexMap[entity.id] == null) {
         this._indexMap[entity.id] = this.entities.length
         this._entities.push(entity)
       }
@@ -40,7 +40,7 @@ export class SingleQuery {
 
   onRemove (entity: Entity) {
     const index = this._indexMap[entity.id]
-    if (index) {
+    if (index != null) {
       const last = <Entity>this._entities.pop()
       if (last !== entity) {
         this._entities[index] = last

@@ -78,5 +78,5 @@ export class Entity {
 }
 
 export function notifyAfterChangeRegistered (entity: Entity) {
-  (<any>entity)._changeRegistered = true
+  (<any>entity)._changeRegistered = false
 }
