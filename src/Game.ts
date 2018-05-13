@@ -1,6 +1,5 @@
 import { Events, Event } from './Events'
 import { Query } from './Query'
-import { assert } from './assert'
 import { World, GameWorld } from './World'
 import { Entity, notifyAfterChangeRegistered } from './Entity'
 import { System, InternalSystem, toInternalSystem } from './System'

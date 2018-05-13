@@ -1,4 +1,3 @@
-import { assert } from './assert'
 import { Entity } from './Entity'
 import { Selector } from './selectors'
 
