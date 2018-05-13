@@ -7,7 +7,8 @@
       "es2015"
     ],
     "declaration": true,
-    "declarationDir": "lib/types"
+    "declarationDir": "lib/types",
+    "strict": true
   },
   "include": [
     "src"
