@@ -1,0 +1,17 @@
+<div class="sidebar">
+  <nav>
+    <ol>
+      <li><a href="{{ .Site.Home.Permalink }}">Home</a></li>
+      {{ range .Site.Sections }}
+        <li>
+          <a href="{{ .Permalink }}">{{ .Title }}</a>
+          <ol>
+            {{ range .Pages }}
+              <li><a href="{{ .Permalink }}">{{ .Title }}</a></li>
+            {{ end }}
+          </ol>
+        </li>
+      {{ end }}
+    </ol>
+  </nav>
+</div>

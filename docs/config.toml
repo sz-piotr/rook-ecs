@@ -1,0 +1,5 @@
+baseURL = "http://sz-piotr.github.io/ouyo/"
+languageCode = "en-us"
+title = "Ouyo - A JavaScript ECS library"
+
+theme = "custom"

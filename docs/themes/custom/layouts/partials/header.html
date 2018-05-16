@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="{{ .Page.Language | default "en" }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ .Hugo.Generator }}
+    {{ if .Title }}
+      <title>{{ .Title }} :: {{ .Site.Title }}</title>
+    {{ else }}
+      <title>{{ .Site.Title }}</title>
+    {{ end }}
+  </head>
+  <body>
+    {{ partial "sidebar.html" . }}
