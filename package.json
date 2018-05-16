@@ -1,19 +1,24 @@
 {
-  "name": "ouyo",
+  "name": "rook-ecs",
   "description": "An Entity-Component-System library built for ease of use and code readability",
   "author": "Piotr Szlachciak <szlachciak.piotr@gmail.com>",
   "keywords": [
     "ecs",
     "entity",
     "component",
-    "system"
+    "system",
+    "javascript",
+    "typescript",
+    "library"
   ],
   "license": "MIT",
-  "version": "0.7.3",
-  "main": "lib/ouyo.js",
+  "version": "0.8.0",
+  "main": "lib/rook-ecs.min.js",
+  "module": "lib/rook-ecs.mjs",
+  "typings": "lib/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sz-piotr/ouyo.git"
+    "url": "https://github.com/sz-piotr/rook-ecs.git"
   },
   "scripts": {
     "start": "rollup -cw",

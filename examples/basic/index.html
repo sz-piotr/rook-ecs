@@ -4,16 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>OUYO Examples: Basic</title>
+    <title>Rook Examples: Basic</title>
   </head>
   <body>
     <canvas id="canvas" width="800" height="600"></canvas>
     <p id="fps">???</p>
 
-    <script src="../../lib/ouyo.js"></script>
+    <script src="../../lib/rook-ecs.min.js"></script>
     <script>
-      const { Game, hasAll } = OUYO
-
       const canvas = document.getElementById('canvas')
       const fpsCounter = document.getElementById('fps')
       const ctx = canvas.getContext('2d')
@@ -44,7 +42,7 @@
       Rectangle.id = 'Rectangle'
 
       const applyVelocity = {
-        query: hasAll(Transform, Velocity),
+        query: Rook.hasAll(Transform, Velocity),
         processEntity(entity, world, { timeDelta }) {
           const transform = entity.get(Transform)
           const velocity = entity.get(Velocity)
@@ -55,7 +53,7 @@
       }
 
       const bounceOfEdges = {
-        query: hasAll(Transform, Rectangle, Velocity),
+        query: Rook.hasAll(Transform, Rectangle, Velocity),
         processEntity(entity) {
           const transform = entity.get(Transform)
           const rectangle = entity.get(Rectangle)
@@ -91,7 +89,7 @@
       }
 
       const renderRectangles = {
-        query: hasAll(Transform, Rectangle),
+        query: Rook.hasAll(Transform, Rectangle),
         processEntity(entity) {
           const transform = entity.get(Transform)
           const rectangle = entity.get(Rectangle)
@@ -148,7 +146,7 @@
         return color
       }
 
-      new Game(systems, init).start()
+      new Rook.Game(systems, init).start()
     </script>
   </body>
 </html>
