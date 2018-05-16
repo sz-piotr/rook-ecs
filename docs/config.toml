@@ -3,3 +3,5 @@ languageCode = "en-us"
 title = "Rook - A JavaScript ECS library"
 
 theme = "custom"
+
+disableKinds = ["RSS", "taxonomy", "taxonomyTerm"]

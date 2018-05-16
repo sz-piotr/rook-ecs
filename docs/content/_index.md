@@ -1,1 +1,1 @@
-I love it
+# Rook - A JavaScript ECS library
