@@ -27,7 +27,6 @@
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "jest": "^22.4.3",
-    "pre-commit": "^1.2.2",
     "rollup": "^0.58.2",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.14.0",
