@@ -1,107 +1,100 @@
-# Rook, the Entity-Component-System library
+# Rook
 
-Rook is a library that simplifies the creation of games by allowing the developer to take advantage of the powerful design pattern of ECS (Entity-Component-System).
-
+Rook is a JavaScript library for creating games in the Entity-Component-System pattern.
 Rook is currently a work in progress. All contributions are welcome.
 
-# API
+## Getting started
 
-## Components
+### Install
 
-In Rook a component is just a JavaScript class. Each component class must have an `id` property with a unique value.
+```
+$ npm install --save rook-ecs
+```
+
+or
+
+```
+$ yarn add rook-ecs
+```
+
+After installing you can include the library in the source
 
 ```typescript
-class Velocity2D {
-  static id = 'Velocity2D'
+import { Game } from 'rook-ecs'
+
+console.log('Hurray!')
+```
+
+### Using UMD build in the browser
+
+Alternatively, you might want to use an UMD build in the browser.
+To do so, grab the minified JavaScript file from
+[here](https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/lib/rook-ecs.min.js)
+and add it to your site with a script tag.
+
+In the browser all of the exports are available under the `Rook` global object.
+
+```html
+<script src="rook-ecs.min.js"></script>
+<script>
+  console.log(Rook.Game)
+</script>
+```
+
+## Usage Example
+
+First we declare the components. These are just plain classes (here implemented in TypeScript).
+The only difference is the `id` property present on the class constructor.
+
+```typescript
+class Position {
+  static id = 'Position'
   constructor (
     public x: number,
     public y: number
-  ) {}
+  )
+}
+
+class Velocity {
+  static id = 'Velocity'
+  constructor (
+    public x: number,
+    public y: number
+  )
 }
 ```
 
-## Systems
-
-Systems in Rook are functions with a tiny bit of metadata. Below is an example of a very simple system. It prints `'Hello World'` every time the game updates.
-
-```typescript
-const sayHello = {
-  process () {
-    console.log('Hello World!')
-  }
-}
-```
-
-### Queries
-
-Systems can query the world for entities. Rook offers two selectors for this task: `hasAll` and `hasAny`.
+Having declared our components we can now use them in a system.
 
 ```typescript
 import { hasAll } from 'rook-ecs'
-import { A } from './components'
 
-const systemWithSimpleQuery = {
-  query: hasAll(A),
-  process (entities) {
-    // ...
+const applyVelocity = {
+  query: hasAll(Position, Velocity),
+  processEntity (entity, { timeDelta }) {
+    const position = entity.get(Position)
+    const velocity = entity.get(Velocity)
+    position.x += velocity.x * timeDelta
+    position.y += velocity.y * timeDelta
   }
 }
 ```
 
-Some systems may want to get the results of more than one query. This can be achieved by passing an array of selectors.
+And just like this, all our entities that have both the `Position` and `Velocity`
+components can now be updated with this system.
+
+The only thing that's left is to start the game and create some entities.
 
 ```typescript
-import { hasAll } from 'rook-ecs'
-import { A, B, C, D } from './components'
+import { Game } from 'rook-ecs'
 
-const systemWithMultipleQueries = {
-  query: [
-    hasAll(A, B),
-    hasAny(C, D)
-  ],
-  process ([ withAandB, withCorD ]) {
-    // ...
-  }
+const systems = [applyVelocity]
+
+function init (world) {
+  world.createEntity()
+    .add(new Position(0, 0))
+    .add(new Velocity(10, 20))
 }
+
+new Game(systems, init).start()
 ```
-
-The system query can be any function that takes an entity and returns a boolean. This means that you can have your own custom logic employed for finding the right entity.
-
-```typescript
-import { Entity } from 'rook-ecs'
-import { A, B, C } from './components'
-
-const customSelector = (entity: Entity) =>
-  entity.has(A) &&
-  entity.has(B) &&
-  !entity.has(C)
-
-const systemWithQustomQuery = {
-  query: customSelector,
-  process (entities) {
-    // ...
-  }
-}
-```
-
-### Events
-
-Some systems rely on something in the world changing. Events provide that information to systems. By default each system listens to the `tick` event, which is emitted every frame. Each event has a `timeDelta` property that holds the time since last event of that type. For the `tick` event the value of `timeDelta` is the time since last update.
-
-...
-
-## World
-
-...
-
-## Entities
-
-...
-
-### Assemblages
-
-...
-
-## Game
-
-...
