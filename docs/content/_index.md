@@ -1,1 +1,1 @@
-# Rook - A JavaScript ECS library
+../../README.md
