@@ -98,3 +98,13 @@ function init (world) {
 
 new Game(systems, init).start()
 ```
+
+## Typescript support
+
+Rook has first class TypeScript support since it is itself written with TypeScript.
+No special compiler options have to be specified for Rook to work, although we
+recommend using the `strict: true` setting.
+
+## Contributing
+
+Rook is currently a work in progress. All contributions are welcome.
