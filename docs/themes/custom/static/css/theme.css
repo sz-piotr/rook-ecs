@@ -14,7 +14,7 @@ main {
   height: 100%;
   overflow: auto;
   padding-left: 0;
-  transition: padding-left .3s;
+  transition: .3s;
 }
 
 .sidebar.open + main {
@@ -57,6 +57,26 @@ h3 {
 
 .sidebar.open {
   left: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .sidebar {
+    left: 0;
+    width: 250px;
+  }
+
+  .sidebar.open {
+    left: -250px;
+  }
+
+  main {
+    left: 250px;
+  }
+
+  .sidebar.open + main {
+    left: 0;
+    padding-left: 0;
+  }
 }
 
 .sidebar-pages ol {
