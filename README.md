@@ -1,6 +1,8 @@
-<div style="text-align: center">
-<img alt="logo" src=logo.png xsrc="https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/logo.png">
-</div>
+<p align="center">
+<a href="https://github.com/sz-piotr/rook-ecs">
+<img alt="logo" src="https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/logo.png">
+</a>
+</p>
 
 # Rook
 
