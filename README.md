@@ -1,7 +1,12 @@
+<div style="text-align: center">
+<img alt="logo" src="https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/logo.svg">
+</div>
+
 # Rook
 
 [![npm](https://img.shields.io/npm/v/rook-ecs.svg)](https://www.npmjs.com/package/rook-ecs)
 [![Build Status](https://travis-ci.org/sz-piotr/rook-ecs.svg?branch=master)](https://travis-ci.org/sz-piotr/rook-ecs)
+![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/rook-ecs.svg)
 
 Rook is a JavaScript library for creating games in the Entity-Component-System pattern.
 Rook is currently a work in progress. All contributions are welcome.
