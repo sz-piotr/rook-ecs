@@ -111,3 +111,9 @@ recommend using the `strict: true` setting.
 ## Contributing
 
 Rook is currently a work in progress. All contributions are welcome.
+
+## Useful reading
+
+* [Rook Documentation](https://sz-piotr.github.io/rook-ecs)
+* [TypeScript Documentation](https://www.typescriptlang.org/docs/home.html)
+* [T-Machine ECS Series](http://t-machine.org/index.php/2007/09/03/entity-systems-are-the-future-of-mmog-development-part-1/)
