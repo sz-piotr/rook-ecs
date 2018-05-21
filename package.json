@@ -12,7 +12,7 @@
     "library"
   ],
   "license": "MIT",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "main": "lib/rook-ecs.min.js",
   "module": "lib/rook-ecs.mjs",
   "typings": "lib/types/index.d.ts",
