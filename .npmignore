@@ -1,7 +1,11 @@
 src/
 test/
 docs/
+lib/types
 .editorconfig
 deploy-docs.sh
 rollup.config.js
 tsconfig.json
+.travis.yml
+logo.svg
+logo.png
