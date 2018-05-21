@@ -4,7 +4,7 @@ export {
   System,
   StandardSystem,
   MultiQuerySystem,
-  InternalSystem
+  IterativeSystem
 } from './systems'
 export { Entity } from './Entity'
 export { Event } from './Events'
