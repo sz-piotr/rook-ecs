@@ -15,7 +15,7 @@
   "version": "0.8.1",
   "main": "lib/rook-ecs.min.js",
   "module": "lib/rook-ecs.mjs",
-  "typings": "lib/types/index.d.ts",
+  "typings": "lib/rook-ecs.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/sz-piotr/rook-ecs.git"
@@ -31,6 +31,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^22.2.3",
+    "dts-bundle-generator": "^1.2.0",
     "jest": "^22.4.3",
     "rollup": "^0.58.2",
     "rollup-plugin-sourcemaps": "^0.4.2",
