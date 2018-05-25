@@ -26,6 +26,17 @@ pre code {
 	hyphens: none;
 }
 
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+  background-color: transparent;
+  font-weight: normal;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+}
+
 .token.comment,
 .token.prolog,
 .token.doctype,
@@ -66,7 +77,6 @@ pre code {
 .language-css .token.string,
 .style .token.string {
 	color: #9a6e3a;
-	background: hsla(0, 0%, 100%, .5);
 }
 
 .token.atrule,
