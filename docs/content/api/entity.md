@@ -17,7 +17,7 @@ be consecutive and this behaviour should not be relied upon.
 ## `Entity.add()`
 
 ```typescript
-function Entity.add(instance: any): this
+function Entity.add (instance: any): this
 ```
 
 Using the `add` function it is possible to add components to an entity. Despite
@@ -42,7 +42,7 @@ entity
 ## `Entity.has()`
 
 ```typescript
-function Entity.has(componentClass: ComponentClass<any>): boolean
+function Entity.has (componentClass: ComponentClass<any>): boolean
 ```
 
 The `has` function informs about the presence or abscence of a component on
@@ -63,7 +63,7 @@ entity.has(Color) // true
 ## `Entity.get()`
 
 ```typescript
-function Entity.get<T>(componentClass: ComponentClass<T>): T
+function Entity.get <T> (componentClass: ComponentClass<T>): T
 ```
 
 The `get` function retrieves a component instance of the supplied type. The argument
