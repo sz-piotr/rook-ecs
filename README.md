@@ -81,7 +81,7 @@ import { hasAll } from 'rook-ecs'
 
 const applyVelocity = {
   query: hasAll(Position, Velocity),
-  processEntity (entity, { timeDelta }) {
+  processEntity (entity, world, { timeDelta }) {
     const position = entity.get(Position)
     const velocity = entity.get(Velocity)
     position.x += velocity.x * timeDelta

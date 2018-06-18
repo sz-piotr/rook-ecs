@@ -16,13 +16,13 @@ export interface StandardSystem {
 }
 
 export interface MultiQuerySystem {
-  query?: Selector[],
+  query: Selector[],
   on?: string,
   process (entites: Entity[][], world: World, event: Event): void
 }
 
 export interface IterativeSystem {
-  query: (entity: Entity) => boolean,
+  query: Selector,
   on?: string,
   processEntity (entity: Entity, world: World, event: Event): void
 }
