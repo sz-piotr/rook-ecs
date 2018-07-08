@@ -1,5 +1,4 @@
 import { Entity, notifyAfterChangeRegistered } from './Entity'
-import { Game } from './Game'
 import { Events, Event } from './Events'
 import { Query } from './Query'
 
@@ -41,16 +40,15 @@ export class GameWorld implements World {
   }
 
   emit (event: Event | string) {
-    this._events.emit(event, this._time || 0)
+    this._events.emit(event, this.time)
   }
 
-  _internal_getEvents (type: string) {
-    return this._events.get(type)
+  _internal_nextEvent () {
+    return this._events.get()
   }
 
   _internal_tick (time: number) {
     this._time = time
-    this._events.clear()
     this.emit('tick')
   }
 

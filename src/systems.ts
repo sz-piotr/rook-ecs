@@ -11,19 +11,19 @@ export type System =
 
 export interface StandardSystem {
   query?: Selector,
-  on?: string,
+  on: string,
   process (entites: Entity[], world: World, event: Event): void
 }
 
 export interface MultiQuerySystem {
   query: Selector[],
-  on?: string,
+  on: string,
   process (entites: Entity[][], world: World, event: Event): void
 }
 
 export interface IterativeSystem {
   query: Selector,
-  on?: string,
+  on: string,
   processEntity (entity: Entity, world: World, event: Event): void
 }
 
