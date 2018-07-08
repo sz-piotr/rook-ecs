@@ -8,31 +8,31 @@ export type Event = {
 }
 
 export class Events {
-  private _events: Event[] = []
   private _eventTimes: EventTimeMap = {}
+  private _queue: Event[] = []
+  private _newEvents: Event[] = []
 
   emit (event: string | Event, time: number) {
     if (typeof event === 'string') {
       event = <Event>{ type: event }
     }
 
-    let lastTime = this._eventTimes[event.type]
-    if (lastTime == null) {
-      lastTime = time
+    if (event.timeDelta == null) {
+      let lastTime = this._eventTimes[event.type]
+      if (lastTime == null) {
+        lastTime = time
+      }
+      event.timeDelta = time - lastTime
     }
-
-    event.timeDelta = time - lastTime
     this._eventTimes[event.type] = time
-    this._events.push(event)
+    this._newEvents.push(event)
   }
 
-  get (eventType: string) {
-    return this._events.filter(
-      event => event.type === eventType
-    )
-  }
-
-  clear () {
-    this._events.length = 0
+  get () {
+    if (this._newEvents.length > 0) {
+      this._queue = this._queue.concat(this._newEvents.reverse())
+      this._newEvents.length = 0
+    }
+    return this._queue.pop()
   }
 }
