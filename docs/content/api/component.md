@@ -7,8 +7,8 @@ weight = 2
 
 ```typescript
 export interface ComponentClass<T> {
-	new (...args: any[]): T;
-	id: string;
+	new (...args: any[]): T,
+	id: string
 }
 ```
 

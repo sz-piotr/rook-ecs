@@ -189,7 +189,7 @@ export class Vector2 {
    * @param length the new length
    */
   setLengthSquared (value: number) {
-    const oldValue = this.lengthSquared;
+    const oldValue = this.lengthSquared
     return (oldValue === 0 || oldValue === value)
       ? this
       : this.mul(Math.sqrt(value / oldValue))
