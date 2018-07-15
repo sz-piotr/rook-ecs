@@ -157,10 +157,10 @@ export class Vector2 {
   mulAdd (add: Vector2, mul: number | Vector2) {
     if (typeof mul === 'number') {
       this.x += add.x * mul
-      this.y += add.x * mul
+      this.y += add.y * mul
     } else {
       this.x += add.x * mul.x
-      this.y += add.x * mul.y
+      this.y += add.y * mul.y
     }
     return this
   }
