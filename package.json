@@ -13,25 +13,25 @@
   ],
   "license": "MIT",
   "version": "0.8.3",
-  "main": "lib/rook-ecs.min.js",
-  "module": "lib/rook-ecs.mjs",
-  "typings": "lib/rook-ecs.d.ts",
+  "main": "lib/cjs/core/index.js",
+  "module": "lib/es/core/index.js",
+  "typings": "lib/cjs/core/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/sz-piotr/rook-ecs.git"
   },
   "scripts": {
-    "start": "rollup -cw",
     "prepublishOnly": "npm run build",
-    "build": "rollup -c",
+    "build": "rm -rf lib && npm run build:umd && npm run build:es && npm run build:cjs",
+    "build:umd": "rollup -c",
+    "build:es": "tsc --outDir lib/es --module ES6",
+    "build:cjs": "tsc --outDir lib/cjs --module CommonJS",
     "test": "jest",
-    "test:watch": "jest --watchAll",
-    "lint": ""
+    "test:watch": "jest --watchAll"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^22.2.3",
-    "dts-bundle-generator": "^1.6.0",
     "jest": "^22.4.4",
     "rollup": "^0.58.2",
     "rollup-plugin-sourcemaps": "^0.4.2",
