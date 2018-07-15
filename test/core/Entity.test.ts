@@ -1,4 +1,4 @@
-import { Entity, notifyAfterChangeRegistered } from '../src/Entity'
+import { Entity, notifyAfterChangeRegistered } from '../../src/core/Entity'
 
 class ComponentA {
   static id = 'ComponentA'

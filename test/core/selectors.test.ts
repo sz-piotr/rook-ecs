@@ -1,5 +1,5 @@
-import { hasAll, hasAny } from '../src/selectors'
-import { Entity } from '../src/Entity'
+import { hasAll, hasAny } from '../../src/core/selectors'
+import { Entity } from '../../src/core/Entity'
 
 class ComponentA {
   static id = 'ComponentA'

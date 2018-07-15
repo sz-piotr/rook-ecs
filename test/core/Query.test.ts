@@ -1,6 +1,6 @@
-import { SingleQuery } from '../src/Query'
-import { Entity } from '../src/Entity'
-import { hasAll } from '../src/selectors'
+import { SingleQuery } from '../../src/core/Query'
+import { Entity } from '../../src/core/Entity'
+import { hasAll } from '../../src/core/selectors'
 
 class ComponentA {
   static id = 'ComponentA'

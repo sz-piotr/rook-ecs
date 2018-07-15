@@ -1,4 +1,4 @@
-import { Events } from '../src/Events'
+import { Events } from '../../src/core/Events'
 
 describe('Events', () => {
   it('can be constructed', () => {
