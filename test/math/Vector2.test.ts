@@ -225,3 +225,11 @@ describe('Vector2.distanceSquaredTo', () => {
     expect(a.distanceSquaredTo(b)).toBe(25)
   })
 })
+
+describe('Vector2.lerp', () => {
+  it('linearly interpolates between two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(3, 6)
+    expect(Vector2.lerp(a, b, 0.5)).toEqual({ x: 2, y: 4 })
+  })
+})

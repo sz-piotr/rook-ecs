@@ -1,3 +1,5 @@
+import { lerp } from './lerp'
+
 export class Vector2 {
   /**
    * Creates a new Vector2
@@ -217,5 +219,18 @@ export class Vector2 {
    */
   toString () {
     return `(${this.x}, ${this.y})`
+  }
+
+  /**
+   * Linearly interpolates between two vectors
+   * @param from result at t = 0
+   * @param to result at t = 1
+   * @param t interpolation parameter
+   */
+  static lerp (from: Vector2, to: Vector2, t: number) {
+    return new Vector2(
+      lerp(from.x, to.x, t),
+      lerp(from.y, to.y, t)
+    )
   }
 }
