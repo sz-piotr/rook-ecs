@@ -49,6 +49,13 @@ export class Vector2 {
   }
 
   /**
+   * Angle of the vector in radians
+   */
+  get angle () {
+    return Math.atan2(this.y, this.x)
+  }
+
+  /**
    * Creates a new Vector2 with values from this vector
    */
   clone () {
@@ -211,6 +218,30 @@ export class Vector2 {
    */
   distanceSquaredTo (other: Vector2) {
     return this.clone().sub(other).lengthSquared
+  }
+
+  /**
+   * Calculates the dot product of two vectors
+   * @param other the other vector
+   */
+  dot (other: Vector2) {
+    return this.x * other.x + this.y * other.y
+  }
+
+  /**
+   * Calculates the cross product of two vectors
+   * @param other the other vector
+   */
+  cross (other: Vector2) {
+    return this.x * other.y - this.y * other.x
+  }
+
+  /**
+   * Calculates the angle between two vectors in radians
+   * @param other the other vector
+   */
+  angleTo (other: Vector2) {
+    return Math.atan2(this.cross(other), this.dot(other))
   }
 
   /**

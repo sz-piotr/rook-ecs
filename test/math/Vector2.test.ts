@@ -16,12 +16,16 @@ describe('Vector2', () => {
     expect(vector).toEqual({ x: 1, y: 2 })
   })
 
-  test('the `length` property works correctly', () => {
+  it('has a `length` property', () => {
     expect(new Vector2(3, 4).length).toEqual(5)
   })
 
-  test('the `lengthSquared` property works correctly', () => {
+  it('has a `lengthSquared` property', () => {
     expect(new Vector2(3, 4).lengthSquared).toEqual(25)
+  })
+
+  it('has an `angle` property', () => {
+    expect(new Vector2(3, 4).angle).toEqual(Math.atan2(4, 3))
   })
 
   it('can be cloned', () => {
@@ -223,6 +227,32 @@ describe('Vector2.distanceSquaredTo', () => {
     const a = new Vector2(1, 2)
     const b = new Vector2(4, 6)
     expect(a.distanceSquaredTo(b)).toBe(25)
+  })
+})
+
+describe('Vector2.dot', () => {
+  it('calculates the dot product of two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(4, 6)
+    expect(a.dot(b)).toBe(16)
+  })
+})
+
+describe('Vector2.cross', () => {
+  it('calculates the cross product of two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(4, 6)
+    expect(a.cross(b)).toBe(-2)
+  })
+})
+
+describe('Vector2.angleTo', () => {
+  it('calculates the angle between two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(4, 6)
+    expect(a.angleTo(b)).toBe(
+      Math.atan2(a.cross(b), a.dot(b))
+    )
   })
 })
 
