@@ -1,0 +1,7 @@
+{
+  "name": "math",
+  "private": true,
+  "main": "../lib/cjs/math/index.js",
+  "module": "../lib/es/math/index.js",
+  "typings": "../lib/es/math/index.d.ts"
+}
