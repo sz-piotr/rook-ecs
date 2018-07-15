@@ -12,7 +12,7 @@
     "library"
   ],
   "license": "MIT",
-  "version": "0.8.3",
+  "version": "0.9.0-beta",
   "main": "lib/cjs/core/index.js",
   "module": "lib/es/core/index.js",
   "typings": "lib/cjs/core/index.d.ts",
@@ -20,6 +20,10 @@
     "type": "git",
     "url": "https://github.com/sz-piotr/rook-ecs.git"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "rm -rf lib && npm run build:umd && npm run build:es && npm run build:cjs",
