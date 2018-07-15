@@ -30,6 +30,11 @@ describe('Vector2', () => {
 
     expect(vector).not.toBe(clone)
     expect(vector).toEqual(clone)
+    expect(vector).toEqual({ x: 1, y: 2 })
+  })
+
+  it('can be stringified', () => {
+    expect(new Vector2(1, 2).toString()).toEqual('(1, 2)')
   })
 })
 
@@ -158,5 +163,65 @@ describe('Vector2.mulAdd', () => {
     expect(a).toEqual({ x: 31, y: 82 })
     expect(b).toEqual({ x: 3, y: 4 }) // not modified
     expect(c).toEqual({ x: 10, y: 20 }) // not modified
+  })
+})
+
+describe('Vector2.setLength', () => {
+  it('changes the length of the vector', () => {
+    const vector = new Vector2(3, 4)
+    vector.setLength(10)
+    expect(vector).toEqual({ x: 6, y: 8 })
+  })
+
+  it('does not affect a vector of (0, 0)', () => {
+    const vector = Vector2.zero()
+    vector.setLength(1)
+    expect(vector).toEqual(Vector2.zero())
+  })
+})
+
+describe('Vector2.setLengthSquared', () => {
+  it('changes the length of the vector', () => {
+    const vector = new Vector2(3, 4)
+    vector.setLengthSquared(100)
+    expect(vector).toEqual({ x: 6, y: 8 })
+  })
+
+  it('does not affect a vector of (0, 0)', () => {
+    const vector = Vector2.zero()
+    vector.setLength(1)
+    expect(vector).toEqual(Vector2.zero())
+  })
+})
+
+describe('Vector2.normalize', () => {
+  it('sets the length of the vector to 1', () => {
+    const vector = new Vector2(3, 4)
+    vector.normalize()
+    expect(
+      vector.equals(new Vector2(3 / 5, 4 / 5), 0.0000000001)
+    ).toBe(true)
+  })
+
+  it('does not affect a vector of (0, 0)', () => {
+    const vector = Vector2.zero()
+    vector.normalize()
+    expect(vector).toEqual(Vector2.zero())
+  })
+})
+
+describe('Vector2.distanceTo', () => {
+  it('calculates the distance between two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(4, 6)
+    expect(a.distanceTo(b)).toBe(5)
+  })
+})
+
+describe('Vector2.distanceSquaredTo', () => {
+  it('calculates square of the distance between two vectors', () => {
+    const a = new Vector2(1, 2)
+    const b = new Vector2(4, 6)
+    expect(a.distanceSquaredTo(b)).toBe(25)
   })
 })

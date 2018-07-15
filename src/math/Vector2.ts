@@ -68,9 +68,9 @@ export class Vector2 {
     if (typeof x !== 'number') {
       this.x = x.x
       this.y = x.y
-    } else if (y !== undefined) {
+    } else {
       this.x = x
-      this.y = y
+      this.y = <number>y
     }
     return this
   }
