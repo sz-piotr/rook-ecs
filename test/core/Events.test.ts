@@ -55,4 +55,16 @@ describe('Events', () => {
     expect(events.get()).toEqual({ type: 'B', timeDelta: 0 })
     expect(events.get()).toEqual({ type: 'C', timeDelta: 0 })
   })
+
+  it('allows for emitting objects', () => {
+    let events = new Events()
+    events.emit({ type: 'A', payload: 123 }, 0)
+    expect(events.get()).toEqual({ type: 'A', timeDelta: 0, payload: 123 })
+  })
+
+  it('allows for changing timeDelta', () => {
+    let events = new Events()
+    events.emit({ type: 'A', timeDelta: 9000 }, 0)
+    expect(events.get()).toEqual({ type: 'A', timeDelta: 9000 })
+  })
 })

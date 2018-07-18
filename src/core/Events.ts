@@ -4,7 +4,14 @@ type EventTimeMap = {
 
 export type Event = {
   type: string,
-  timeDelta: number
+  timeDelta: number,
+  payload: any
+}
+
+export type EventConstructor = {
+  type: string,
+  timeDelta?: number,
+  payload?: any
 }
 
 export class Events {
@@ -12,12 +19,12 @@ export class Events {
   private _queue: Event[] = []
   private _newEvents: Event[] = []
 
-  emit (event: string | Event, time: number) {
+  emit (event: string | EventConstructor, time: number) {
     if (typeof event === 'string') {
-      event = <Event>{ type: event }
+      event = <EventConstructor>{ type: event }
     }
 
-    if (event.timeDelta == null) {
+    if (event.timeDelta === undefined) {
       let lastTime = this._eventTimes[event.type]
       if (lastTime == null) {
         lastTime = time
@@ -25,7 +32,7 @@ export class Events {
       event.timeDelta = time - lastTime
     }
     this._eventTimes[event.type] = time
-    this._newEvents.push(event)
+    this._newEvents.push(<Event>event)
   }
 
   get () {

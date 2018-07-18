@@ -8,5 +8,5 @@ export {
   IterativeSystem
 } from './systems'
 export { Entity } from './Entity'
-export { Event } from './Events'
+export { Event, EventConstructor } from './Events'
 export { ComponentClass } from './components'

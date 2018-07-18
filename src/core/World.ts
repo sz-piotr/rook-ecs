@@ -1,12 +1,12 @@
 import { Entity, notifyAfterChangeRegistered } from './Entity'
-import { Events, Event } from './Events'
+import { Events, EventConstructor } from './Events'
 import { Query } from './Query'
 
 export interface World {
   readonly time: number,
   createEntity (assemblage?: (entity: Entity) => void): Entity,
   removeEntity (entity: Entity): void,
-  emit (event: Event | string): void
+  emit (event: string | EventConstructor): void
 }
 
 export class GameWorld implements World {
@@ -39,7 +39,7 @@ export class GameWorld implements World {
     this._removedEntities.push(entity)
   }
 
-  emit (event: Event | string) {
+  emit (event: string | EventConstructor) {
     this._events.emit(event, this.time)
   }
 
