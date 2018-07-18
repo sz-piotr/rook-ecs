@@ -1,6 +1,6 @@
 export { Game } from './Game'
 export { World } from './World'
-export { hasAll, hasAny } from './selectors'
+export { hasAll } from './selectors'
 export {
   System,
   StandardSystem,

@@ -13,16 +13,6 @@ export function hasAll (...components: ComponentClass<any>[]): Selector {
   )
 }
 
-export function hasAny (...components: ComponentClass<any>[]): Selector {
-  if (!components.every(isComponent)) {
-    throw new Error('hasAny :: All arguments must be components.')
-  }
-
-  return entity => components.some(
-    component => entity.has(component)
-  )
-}
-
 function isComponent (componentClass: any): componentClass is ComponentClass<any> {
   return componentClass && componentClass.id
 }

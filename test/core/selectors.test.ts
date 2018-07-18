@@ -1,4 +1,4 @@
-import { hasAll, hasAny } from '../../src/core/selectors'
+import { hasAll } from '../../src/core/selectors'
 import { Entity } from '../../src/core/Entity'
 
 class ComponentA {
@@ -27,24 +27,8 @@ describe('hasAll', () => {
     expect(selector(entity3)).toBe(false)
     expect(selector(entity4)).toBe(false)
   })
-})
 
-describe('hasAny', () => {
-  it('checks if entity has any of the specified components', () => {
-    const selector = hasAny(ComponentA, ComponentB)
-
-    const entity1 = new Entity()
-      .add(new ComponentA())
-      .add(new ComponentB())
-    const entity2 = new Entity()
-      .add(new ComponentA())
-    const entity3 = new Entity()
-      .add(new ComponentB())
-    const entity4 = new Entity()
-
-    expect(selector(entity1)).toBe(true)
-    expect(selector(entity2)).toBe(true)
-    expect(selector(entity3)).toBe(true)
-    expect(selector(entity4)).toBe(false)
+  it('checks its arguments', () => {
+    expect(() => hasAll(<any>null)).toThrow()
   })
 })
