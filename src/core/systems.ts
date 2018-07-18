@@ -40,7 +40,7 @@ export function toInternalSystem (system: System): InternalSystem {
 
   return {
     query: system.query && createQuery(system.query),
-    on: system.on || 'tick',
+    on: system.on,
     process
   }
 }
