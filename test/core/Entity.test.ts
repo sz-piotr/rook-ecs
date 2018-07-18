@@ -21,6 +21,16 @@ describe('Entity', () => {
     expect(entity.get(ComponentA)).toEqual(instance)
   })
 
+  test('add() should check the argument for nullish values', () => {
+    const entity = new Entity()
+    expect(() => entity.add(null)).toThrow()
+  })
+
+  test('add() should check the argument for non-components', () => {
+    const entity = new Entity()
+    expect(() => entity.add({ hello: 'hello' })).toThrow()
+  })
+
   test('add() should allow only one instance of the same component', () => {
     const entity = new Entity()
 
@@ -36,12 +46,22 @@ describe('Entity', () => {
     expect(entity.has(ComponentB)).toBe(false)
   })
 
+  test('has() should check the argument for non-components', () => {
+    const entity = new Entity()
+    expect(() => entity.has(<any>{ hello: 'hello' })).toThrow()
+  })
+
   test('get() should throw if component doesn\'t exist', () => {
     const entity = new Entity()
     entity.add(new ComponentA())
 
     expect(() => entity.get(ComponentA)).not.toThrow()
     expect(() => entity.get(ComponentB)).toThrow()
+  })
+
+  test('get() should check the argument for non-components', () => {
+    const entity = new Entity()
+    expect(() => entity.get(<any>{ hello: 'hello' })).toThrow()
   })
 
   test('remove() should remove the component', () => {
@@ -53,6 +73,11 @@ describe('Entity', () => {
     entity.remove(ComponentA)
 
     expect(entity.has(ComponentA)).toBe(false)
+  })
+
+  test('remove() should check the argument for non-components', () => {
+    const entity = new Entity()
+    expect(() => entity.remove(<any>{ hello: 'hello' })).toThrow()
   })
 
   test('onChange correct call behaviour', () => {
