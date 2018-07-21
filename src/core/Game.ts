@@ -1,10 +1,12 @@
 import { Query } from './Query'
+import { Event } from './Events'
 import { World, GameWorld } from './World'
 import { System, InternalSystem, toInternalSystem } from './systems'
 
 export class Game {
   private _systems: { [key: string]: InternalSystem[] } = {}
   private _world: GameWorld
+  private _subscriptions: ((event: Event) => void)[] = []
 
   constructor (systems: System[], init?: (world: World) => void) {
     const queries: Query[] = []
@@ -26,8 +28,16 @@ export class Game {
   update (time: number) {
     this._world._internal_tick(time)
 
-    let event
-    while (event = this._world._internal_nextEvent()) {
+    while (true) {
+      const event = this._world._internal_nextEvent()
+      if (!event) {
+        break
+      }
+
+      for (const listener of this._subscriptions) {
+        listener(event)
+      }
+
       if(this._systems[event.type]) {
         for (const system of this._systems[event.type]) {
           this._world._internal_handleChanges()
@@ -47,5 +57,15 @@ export class Game {
       this.update(Date.now() / 1000)
     }
     update()
+  }
+
+  subscribe (listener: (event: Event) => void): () => void {
+    this._subscriptions.push(listener)
+    return () => {
+      this._subscriptions.splice(
+        this._subscriptions.indexOf(listener),
+        1
+      )
+    }
   }
 }
