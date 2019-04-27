@@ -1,5 +1,5 @@
-import { System, toInternalSystem } from '../../src/core/systems'
-import { SingleQuery, MultiQuery } from '../../src/core/Query'
+import { System, toInternalSystem } from '../src/systems'
+import { SingleQuery, MultiQuery } from '../src/Query'
 
 describe('toInternalSystem', () => {
   it('unifies a standard system without a query', () => {

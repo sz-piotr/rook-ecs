@@ -1,6 +1,6 @@
-import { createQuery } from '../../src/core/Query'
-import { Entity } from '../../src/core/Entity'
-import { hasAll } from '../../src/core/selectors'
+import { createQuery } from '../src/Query'
+import { Entity } from '../src/Entity'
+import { hasAll } from '../src/selectors'
 
 class ComponentA {
   static id = 'ComponentA'
@@ -22,7 +22,7 @@ describe('createQuery', () => {
   })
 
   it('validates its arguments', () => {
-    expect(() => createQuery([null])).toThrow()
+    expect(() => createQuery([null as any])).toThrow()
   })
 })
 

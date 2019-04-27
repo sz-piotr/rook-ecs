@@ -4,13 +4,13 @@
     "sourceMap": true,
     "target": "es5",
     "lib": [
-      "es2015", "dom"
+      "esnext",
+      "dom"
     ],
     "moduleResolution": "node",
+    "module": "commonjs",
     "declaration": true,
-    "strict": true
-  },
-  "include": [
-    "src"
-  ]
+    "strict": true,
+    "noUnusedLocals": true
+  }
 }

@@ -1,5 +1,5 @@
-import { hasAll } from '../../src/core/selectors'
-import { Entity } from '../../src/core/Entity'
+import { hasAll } from '../src/selectors'
+import { Entity } from '../src/Entity'
 
 class ComponentA {
   static id = 'ComponentA'

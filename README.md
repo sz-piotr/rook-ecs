@@ -1,7 +1,5 @@
 <p align="center">
-<a href="https://github.com/sz-piotr/rook-ecs">
 <img alt="logo" src="https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/logo.png">
-</a>
 </p>
 
 # Rook
@@ -39,7 +37,7 @@ console.log('Hurray!')
 
 Alternatively, you might want to use an UMD build in the browser.
 To do so, grab the minified JavaScript file from
-[here](https://raw.githubusercontent.com/sz-piotr/rook-ecs/master/lib/rook-ecs.min.js)
+[here](https://unpkg.com/rook-ecs/lib/rook-ecs.min.js)
 and add it to your site with a script tag.
 
 In the browser all of the exports are available under the `Rook` global object.
@@ -62,7 +60,7 @@ class Position {
   constructor (
     public x: number,
     public y: number
-  )
+  ) {}
 }
 
 class Velocity {
@@ -70,7 +68,7 @@ class Velocity {
   constructor (
     public x: number,
     public y: number
-  )
+  ) {}
 }
 ```
 
@@ -81,6 +79,7 @@ import { hasAll } from 'rook-ecs'
 
 const applyVelocity = {
   query: hasAll(Position, Velocity),
+  on: 'tick',
   processEntity (entity, world, { timeDelta }) {
     const position = entity.get(Position)
     const velocity = entity.get(Velocity)
@@ -121,6 +120,5 @@ Rook is currently a work in progress. All contributions are welcome.
 
 ## Useful reading
 
-* [Rook Documentation](https://sz-piotr.github.io/rook-ecs)
 * [TypeScript Documentation](https://www.typescriptlang.org/docs/home.html)
 * [T-Machine ECS Series](http://t-machine.org/index.php/2007/09/03/entity-systems-are-the-future-of-mmog-development-part-1/)

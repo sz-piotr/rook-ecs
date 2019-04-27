@@ -12,51 +12,39 @@
     "library"
   ],
   "license": "MIT",
-  "version": "0.9.0-beta",
-  "main": "lib/cjs/core/index.js",
-  "module": "lib/es/core/index.js",
-  "typings": "lib/es/core/index.d.ts",
+  "version": "0.10.0-beta",
+  "main": "dist/cjs/core/index.js",
+  "module": "dist/esm/core/index.js",
+  "types": "dist/esm/core/index.d.ts",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/sz-piotr/rook-ecs.git"
   },
   "files": [
-    "lib",
+    "dist",
     "src"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf lib && npm run build:umd && npm run build:es && npm run build:cjs",
-    "build:umd": "rollup -c",
-    "build:es": "tsc --outDir lib/es --module ES6",
-    "build:cjs": "tsc --outDir lib/cjs --module CommonJS --declaration false",
+    "build": "rm -rf dist && yarn build:esm && yarn build:cjs && yarn build:umd && yarn build:min",
+    "build:esm": "tsc --outDir dist/esm --module ES6",
+    "build:cjs": "tsc --outDir dist/cjs --declaration false",
+    "build:umd": "rollup -f umd -n Rook -o dist/umd/rook-ecs.js dist/esm/index.js",
+    "build:min": "uglifyjs -cmo dist/umd/rook-ecs.min.js dist/umd/rook-ecs.js",
     "test": "jest",
     "test:watch": "jest --watchAll"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^22.2.3",
-    "jest": "^22.4.4",
-    "rollup": "^0.58.2",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.14.0",
-    "rollup-plugin-uglify": "^3.0.0",
-    "temp-dir": "^1.0.0",
-    "ts-jest": "^22.4.6",
-    "typescript": "^2.9.2"
+    "@types/jest": "^24.0.11",
+    "jest": "^24.7.1",
+    "rollup": "^1.10.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.8"
   },
   "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "\\.(test|spec)\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+    "preset": "ts-jest",
+    "testRegex": "\\.(test|spec)\\.(jsx?|tsx?)$"
   }
 }
