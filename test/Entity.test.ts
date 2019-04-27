@@ -1,72 +1,65 @@
-import { Entity, notifyAfterChangeRegistered } from '../src/Entity'
+import { Entity, clearNotify } from '../src/Entity'
 
-class ComponentA {
-  static id = 'ComponentA'
-}
-
-class ComponentB {
-  static id = 'ComponentB'
-}
+class ComponentA { }
+class ComponentB { }
 
 describe('Entity', () => {
-  it('can be constructed', () => {
-    expect(() => new Entity()).not.toThrow()
-  })
-
-  test('add() should add the component instance', () => {
-    const entity = new Entity()
+  it('add() should add the component instance', () => {
     const instance = new ComponentA()
-    entity.add(instance)
 
-    expect(entity.get(ComponentA)).toEqual(instance)
+    const result = new Entity(() => { })
+      .add(instance)
+      .get(ComponentA)
+
+    expect(result).toEqual(instance)
   })
 
-  test('add() should check the argument for nullish values', () => {
-    const entity = new Entity()
-    expect(() => entity.add(null)).toThrow()
+  it('add() should check the argument for nullish values', () => {
+    const entity = new Entity(() => { })
+    expect(() => entity.add(null as any)).toThrow()
   })
 
-  test('add() should check the argument for non-components', () => {
-    const entity = new Entity()
+  it('add() should check the argument for non-components', () => {
+    const entity = new Entity(() => { })
     expect(() => entity.add({ hello: 'hello' })).toThrow()
   })
 
-  test('add() should allow only one instance of the same component', () => {
-    const entity = new Entity()
+  it('add() should allow only one instance of the same component', () => {
+    const entity = new Entity(() => { })
 
     expect(() => entity.add(new ComponentA())).not.toThrow()
     expect(() => entity.add(new ComponentA())).toThrow()
   })
 
-  test('has() should return correct information', () => {
-    const entity = new Entity()
+  it('has() should return correct information', () => {
+    const entity = new Entity(() => { })
     entity.add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
     expect(entity.has(ComponentB)).toBe(false)
   })
 
-  test('has() should check the argument for non-components', () => {
-    const entity = new Entity()
+  it('has() should check the argument for non-components', () => {
+    const entity = new Entity(() => { })
     expect(() => entity.has(<any>{ hello: 'hello' })).toThrow()
   })
 
-  test('get() should throw if component doesn\'t exist', () => {
-    const entity = new Entity()
+  it('get() should throw if component doesn\'t exist', () => {
+    const entity = new Entity<any>(() => { })
     entity.add(new ComponentA())
 
     expect(() => entity.get(ComponentA)).not.toThrow()
     expect(() => entity.get(ComponentB)).toThrow()
   })
 
-  test('get() should check the argument for non-components', () => {
-    const entity = new Entity()
+  it('get() should check the argument for non-components', () => {
+    const entity = new Entity(() => { })
     expect(() => entity.get(<any>{ hello: 'hello' })).toThrow()
   })
 
-  test('remove() should remove the component', () => {
-    const entity = new Entity()
-    entity.add(new ComponentA())
+  it('remove() should remove the component', () => {
+    const entity = new Entity(() => { })
+      .add(new ComponentA())
 
     expect(entity.has(ComponentA)).toBe(true)
 
@@ -75,16 +68,16 @@ describe('Entity', () => {
     expect(entity.has(ComponentA)).toBe(false)
   })
 
-  test('remove() should check the argument for non-components', () => {
-    const entity = new Entity()
+  it('remove() should check the argument for non-components', () => {
+    const entity = new Entity(() => { })
     expect(() => entity.remove(<any>{ hello: 'hello' })).toThrow()
   })
 
-  test('onChange correct call behaviour', () => {
+  it('onChange correct call behaviour', () => {
     const onChange = jest.fn()
 
     const entity = new Entity(onChange)
-    entity.add(new ComponentA())
+      .add(new ComponentA())
 
     expect(onChange).toBeCalledWith(entity)
     onChange.mockClear()
@@ -93,7 +86,7 @@ describe('Entity', () => {
     entity.remove(ComponentA)
 
     expect(onChange).not.toBeCalled()
-    notifyAfterChangeRegistered(entity)
+    clearNotify(entity)
 
     entity.remove(ComponentB)
 

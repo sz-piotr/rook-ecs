@@ -1,35 +1,16 @@
-import { createQuery } from '../src/Query'
-import { Entity } from '../src/Entity'
-import { hasAll } from '../src/selectors'
+import { Query } from '../src/Query'
+import { Entity, hasAll } from '../src'
 
-class ComponentA {
-  static id = 'ComponentA'
-}
+class ComponentA {}
 
-class ComponentB {
-  static id = 'ComponentB'
-}
+class ComponentB {}
 
 const selector = hasAll(ComponentA)
 
-describe('createQuery', () => {
-  it('can create SingleQuery', () => {
-    expect(() => createQuery(selector)).not.toThrow()
-  })
-
-  it('can create MultiQuery', () => {
-    expect(() => createQuery([selector, selector])).not.toThrow()
-  })
-
-  it('validates its arguments', () => {
-    expect(() => createQuery([null as any])).toThrow()
-  })
-})
-
 describe('SingleQuery', () => {
-  test('onChange should correctly modify the entities list', () => {
-    const query = createQuery(selector)
-    const entity = new Entity()
+  it('onChange should correctly modify the entities list', () => {
+    const query = new Query(selector, [])
+    const entity = new Entity(() => {})
       .add(new ComponentA())
 
     query.onChange(entity)
@@ -47,9 +28,9 @@ describe('SingleQuery', () => {
     expect(query.entities).toEqual([])
   })
 
-  test('onRemove should correctly modify the entities list', () => {
-    const query = createQuery(selector)
-    const entity = new Entity()
+  it('onRemove should correctly modify the entities list', () => {
+    const query = new Query(selector, [])
+    const entity = new Entity(() => {})
       .add(new ComponentA())
 
     query.onChange(entity)
@@ -59,11 +40,11 @@ describe('SingleQuery', () => {
     expect(query.entities).toEqual([])
   })
 
-  test('handles multiple entities', () => {
-    const query = createQuery(selector)
+  it('handles multiple entities', () => {
+    const query = new Query(selector, [])
 
-    const entityA = new Entity().add(new ComponentA())
-    const entityB = new Entity().add(new ComponentA())
+    const entityA = new Entity(() => {}).add(new ComponentA())
+    const entityB = new Entity(() => {}).add(new ComponentA())
 
     query.onChange(entityA)
     query.onChange(entityB)
@@ -74,46 +55,24 @@ describe('SingleQuery', () => {
     expect(query.entities).toEqual([])
   })
 
-  test('handles unknown entities', () => {
-    const query = createQuery(selector)
-    const entity = new Entity()
+  it('handles unknown entities', () => {
+    const query = new Query(selector, [])
+    const entity = new Entity(() => {})
 
     query.onRemove(entity)
 
     expect(query.entities).toEqual([])
   })
-})
 
-describe('MultiQuery', () => {
-  test('onChange should correctly modify the entities list', () => {
-    const query = createQuery([selector, selector])
-    const entity = new Entity()
-      .add(new ComponentA())
+  it('filters its entities initially', () => {
+    const entity1 = new Entity(() => {}).add(new ComponentA())
+    const entity2 = new Entity(() => {}).add(new ComponentA())
+    const query = new Query(selector, [
+      entity1,
+      entity2,
+      new Entity(() => {}).add(new ComponentB()),
+    ])
 
-    query.onChange(entity)
-
-    expect(query.entities).toEqual([ [entity], [entity] ])
-
-    entity.add(new ComponentB())
-    query.onChange(entity)
-
-    expect(query.entities).toEqual([ [entity], [entity] ])
-
-    entity.remove(ComponentA)
-
-    query.onChange(entity)
-    expect(query.entities).toEqual([ [], [] ])
-  })
-
-  test('onRemove should correctly modify the entities list', () => {
-    const query = createQuery([selector, selector])
-    const entity = new Entity()
-      .add(new ComponentA())
-
-    query.onChange(entity)
-    expect(query.entities).toEqual([ [entity], [entity] ])
-
-    query.onRemove(entity)
-    expect(query.entities).toEqual([ [], [] ])
+    expect(query.entities).toEqual([entity1, entity2])
   })
 })

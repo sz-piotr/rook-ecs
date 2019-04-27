@@ -1,82 +1,75 @@
-import { ComponentClass } from './components'
-
-type ComponentMap = {
-  [key: string]: any
+export type Instance = { constructor: Function }
+export interface Constructor<T> {
+  new (...args: any[]): T
 }
 
-let idSequence = 0
+export class Entity<T = never> {
+  private components = new Map<Constructor<any>, any>()
+  private didNotify = false
+  private notify: () => void
 
-export class Entity {
-  private _components: ComponentMap = Object.create(null)
-  private _changeRegistered = false
-  private _registerChange?: (entity: Entity) => void
-
-  readonly id = idSequence++
-
-  constructor (_registerChange?: (entity: Entity) => void) {
-    this._registerChange = _registerChange
+  constructor (onChange: (entity: Entity<T>) => void) {
+    this.notify = () => {
+      if (!this.didNotify) {
+        this.didNotify = true
+        onChange(this)
+      }
+    }
   }
 
-  add (instance: any) {
-    if (instance == null) {
-      throw new Error('Entity.add :: Argument is not a component instance.')
+  add <U extends Instance> (component: U): Entity<T | U> {
+    if (component == null) {
+      throw new TypeError('Argument is not a component instance.')
     }
 
-    const componentClass = instance.constructor
+    const componentType = component.constructor as Constructor<U>
 
-    if (!componentClass || !componentClass.id) {
-      throw new Error('Entity.add :: Argument is not a component instance.')
-    } else if (this._components[componentClass.id]) {
-      throw new Error('Entity.add :: Component class already present.')
+    if ((componentType as any) === Object || typeof componentType !== 'function') {
+      throw new TypeError('Argument is not a component instance.')
+    } else if (this.components.has(componentType)) {
+      throw new Error('Component type already present.')
     }
 
-    this._components[componentClass.id] = instance
-    this._onChange()
+    this.components.set(componentType, component)
+    this.notify()
 
     return this
   }
 
-  has (componentClass: ComponentClass<any>) {
-    if (!componentClass || !componentClass.id) {
-      throw new Error('Entity.has :: Argument is not a component class.')
+  has <U> (componentType: Constructor<U>): this is Entity<T | U> {
+    if (typeof componentType !== 'function') {
+      throw new TypeError('Argument is not a component type.')
     }
 
-    return !!this._components[componentClass.id]
+    return this.components.has(componentType)
   }
 
-  get <T> (componentClass: ComponentClass<T>): T {
-    if (!componentClass || !componentClass.id) {
-      throw new Error('Entity.get :: Argument is not a component class.')
+  get <U extends T> (componentType: Constructor<U>): U {
+    if (typeof componentType !== 'function') {
+      throw new TypeError('Argument is not a component type.')
     }
 
-    const component = this._components[componentClass.id]
+    const component = this.components.get(componentType) as U
 
     if (!component) {
-      throw new Error('Entity.get :: Component class not present.')
+      throw new TypeError('Component type not present.')
     }
 
-    return <T>component
+    return component
   }
 
-  remove (componentClass: ComponentClass<any>) {
-    if (!componentClass || !componentClass.id) {
-      throw new Error('Entity.remove :: Argument is not a component class.')
+  remove <U extends T> (componentType: Constructor<U>): Entity<Exclude<T, U>> {
+    if (typeof componentType !== 'function') {
+      throw new TypeError('Argument is not a component type.')
     }
 
-    this._components[componentClass.id] = undefined
-    this._onChange()
+    this.components.delete(componentType)
+    this.notify()
 
-    return this
-  }
-
-  private _onChange () {
-    if (!this._changeRegistered && this._registerChange) {
-      this._registerChange(this)
-      this._changeRegistered = true
-    }
+    return this as any
   }
 }
 
-export function notifyAfterChangeRegistered (entity: Entity) {
-  (<any>entity)._changeRegistered = false
+export function clearNotify (entity: Entity<any>) {
+  (<any>entity).didNotify = false
 }

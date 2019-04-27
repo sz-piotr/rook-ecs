@@ -1,18 +1,16 @@
-import { Entity } from './Entity'
-import { ComponentClass } from './components'
+import { Entity, Constructor } from './Entity'
 
-export type Selector = (entity: Entity) => boolean
+export type Selector<T = any> = (entity: Entity<any>) => entity is Entity<T>
 
-export function hasAll (...components: ComponentClass<any>[]): Selector {
-  if (!components.every(isComponent)) {
-    throw new Error('hasAll :: All arguments must be components.')
+type Item<T extends any[]> = T extends (infer R)[] ? R : never
+type Constructed<T extends Constructor<any>[]> = InstanceType<Item<T>>
+
+export function hasAll <T extends Constructor<any>[]> (...components: T): Selector<Constructed<T>> {
+  if (components.some(component => typeof component !== 'function')) {
+    throw new TypeError('All arguments must be components.')
   }
 
-  return entity => components.every(
-    component => entity.has(component)
-  )
+  return (entity): entity is Entity<Constructed<T>> =>
+    components.every(component => entity.has(component))
 }
 
-function isComponent (componentClass: any): componentClass is ComponentClass<any> {
-  return componentClass && componentClass.id
-}
