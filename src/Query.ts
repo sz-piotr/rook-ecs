@@ -1,15 +1,16 @@
-import { Entity } from './Entity'
-import { Selector } from './selectors'
+import { Entity, Constructor } from './Entity'
 
 export class Query {
   entities: Entity[]
   private indices = new WeakMap<Entity, number>()
+  private selector: (entity: Entity) => boolean
 
-  constructor (private selector: Selector, entities: Entity[]) {
-    if (typeof selector !== 'function') {
-      throw new TypeError('selector must be a function')
-    }
-    this.entities = entities.filter(selector)
+  constructor (
+    readonly components: Constructor<any>[],
+    entities: Entity[],
+  ) {
+    this.selector = entity => components.every(c => entity.has(c))
+    this.entities = entities.filter(this.selector)
   }
 
   onChange (entity: Entity) {
