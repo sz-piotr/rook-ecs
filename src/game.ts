@@ -6,9 +6,7 @@ import { EntityManager } from './EntityManager'
 export function startGame (systems: System<any>[]) {
   const cleanups: (() => void)[] = []
   const events: any[] = []
-
   const entityManager = new EntityManager()
-
   let running = false
 
   function add (components: any[] = []) {

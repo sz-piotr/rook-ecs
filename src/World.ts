@@ -1,8 +1,9 @@
-import { Entity, Instance, Constructor } from './Entity'
+import { Entity, Instance } from './Entity'
+import { EntitySelector } from './selector'
 
 export interface World<E> {
   event: E
-  query <T extends Constructor<any>[]> (...components: T): Entity[]
+  query (selector: EntitySelector): Entity[]
   add <T extends Instance> (components?: T[]): Entity
   remove (entity: Entity): void
   emit (event: Instance): void

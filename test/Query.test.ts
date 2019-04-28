@@ -1,12 +1,14 @@
 import { Query } from '../src/Query'
-import { Entity } from '../src'
+import { Entity, selectAll } from '../src'
 
 class ComponentA {}
 class ComponentB {}
 
+const selector = selectAll(ComponentA)
+
 describe('Query', () => {
   it('onChange should correctly modify the entities list', () => {
-    const query = new Query([ComponentA], [])
+    const query = new Query(selector, [])
     const entity = new Entity(() => {})
       .add(new ComponentA())
 
@@ -26,7 +28,7 @@ describe('Query', () => {
   })
 
   it('onRemove should correctly modify the entities list', () => {
-    const query = new Query([ComponentA], [])
+    const query = new Query(selector, [])
     const entity = new Entity(() => {})
       .add(new ComponentA())
 
@@ -38,7 +40,7 @@ describe('Query', () => {
   })
 
   it('handles multiple entities', () => {
-    const query = new Query([ComponentA], [])
+    const query = new Query(selector, [])
 
     const entityA = new Entity(() => {}).add(new ComponentA())
     const entityB = new Entity(() => {}).add(new ComponentA())
@@ -53,7 +55,7 @@ describe('Query', () => {
   })
 
   it('handles unknown entities', () => {
-    const query = new Query([ComponentA], [])
+    const query = new Query(selector, [])
     const entity = new Entity(() => {})
 
     query.onRemove(entity)
@@ -64,7 +66,7 @@ describe('Query', () => {
   it('filters its entities initially', () => {
     const entity1 = new Entity(() => {}).add(new ComponentA())
     const entity2 = new Entity(() => {}).add(new ComponentA())
-    const query = new Query([ComponentA], [
+    const query = new Query(selector, [
       entity1,
       entity2,
       new Entity(() => {}).add(new ComponentB()),
@@ -82,7 +84,7 @@ describe('Query', () => {
     const entity3 = new Entity(() => {})
 
     const query = new Query(
-      [ComponentA, ComponentB],
+      selectAll(ComponentA, ComponentB),
       [entity1, entity2, entity3],
     )
 

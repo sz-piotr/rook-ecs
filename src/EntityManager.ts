@@ -1,35 +1,31 @@
-import { Entity, Constructor, clearNotify } from './Entity'
+import { Entity, clearNotify } from './Entity'
 import { Query } from './Query'
+import { EntitySelector } from './selector'
 
 export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
-  private queryAll = new Query([], [])
+  private queryAll = new Query(() => true, [])
   private queries: Query[] = [this.queryAll]
-  private queryMap: Record<string, Query[] | undefined> = { '': [this.queryAll] }
+  private queryMap = new Map<EntitySelector, Query>()
 
-  query = (...components: Constructor<any>[]): Entity[] => {
-    const id = getQueryId(components)
-    const queries = this.queryMap[id]
-    if (queries) {
-      const query = queries.find(hasComponents(components))
-      if (query) {
-        return query.entities
-      }
+  query = (selector: EntitySelector): Entity[] => {
+    if (!selector.cache) {
+      return this.queryAll.entities.filter(selector)
     }
-    const query = new Query(components, this.queryAll.entities)
-    this.queryMap[id] = (this.queryMap[id] || []).concat([query])
-    this.queries.push(query)
-    return query.entities
+    const existingQuery = this.queryMap.get(selector)
+    if (existingQuery) {
+      return existingQuery.entities
+    } else {
+      const newQuery = new Query(selector, this.queryAll.entities)
+      this.queryMap.set(selector, newQuery)
+      this.queries.push(newQuery)
+      return newQuery.entities
+    }
   }
 
-  scheduleUpdate = (entity: Entity) => {
-    this.changed.push(entity)
-  }
-
-  scheduleRemove = (entity: Entity) => {
-    this.removed.push(entity)
-  }
+  scheduleUpdate = (entity: Entity) => this.changed.push(entity)
+  scheduleRemove = (entity: Entity) => this.removed.push(entity)
 
   processUpdates () {
     for (const query of this.queries) {
@@ -41,15 +37,4 @@ export class EntityManager {
     this.removed.forEach(clearNotify)
     this.removed.length = 0
   }
-}
-
-function getQueryId (components: Constructor<any>[]) {
-  return components
-    .map(component => component.name)
-    .join('&')
-}
-
-function hasComponents (components: Constructor<any>[]) {
-  return (query: Query) => query.components.length === components.length &&
-    query.components.every((component, index) => component === components[index])
 }
