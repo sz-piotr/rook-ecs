@@ -3,12 +3,12 @@ export interface Constructor<T> {
   new (...args: any[]): T
 }
 
-export class Entity<T = never> {
+export class Entity {
   private components = new Map<Constructor<any>, any>()
   private didNotify = false
   private notify: () => void
 
-  constructor (onChange: (entity: Entity<T>) => void) {
+  constructor (onChange: (entity: Entity) => void) {
     this.notify = () => {
       if (!this.didNotify) {
         this.didNotify = true
@@ -17,12 +17,12 @@ export class Entity<T = never> {
     }
   }
 
-  add <U extends Instance> (component: U): Entity<T | U> {
+  add (component: any): this {
     if (component == null) {
       throw new TypeError('Argument is not a component instance.')
     }
 
-    const componentType = component.constructor as Constructor<U>
+    const componentType = component.constructor
 
     if ((componentType as any) === Object || typeof componentType !== 'function') {
       throw new TypeError('Argument is not a component instance.')
@@ -36,7 +36,7 @@ export class Entity<T = never> {
     return this
   }
 
-  has <U> (componentType: Constructor<U>): this is Entity<T | U> {
+  has <U> (componentType: Constructor<U>): boolean {
     if (typeof componentType !== 'function') {
       throw new TypeError('Argument is not a component type.')
     }
@@ -44,7 +44,7 @@ export class Entity<T = never> {
     return this.components.has(componentType)
   }
 
-  get <U extends T> (componentType: Constructor<U>): U {
+  get <U> (componentType: Constructor<U>): U {
     if (typeof componentType !== 'function') {
       throw new TypeError('Argument is not a component type.')
     }
@@ -58,7 +58,7 @@ export class Entity<T = never> {
     return component
   }
 
-  remove <U extends T> (componentType: Constructor<U>): Entity<Exclude<T, U>> {
+  remove (componentType: Constructor<any>): this {
     if (typeof componentType !== 'function') {
       throw new TypeError('Argument is not a component type.')
     }
@@ -70,6 +70,6 @@ export class Entity<T = never> {
   }
 }
 
-export function clearNotify (entity: Entity<any>) {
+export function clearNotify (entity: Entity) {
   (<any>entity).didNotify = false
 }

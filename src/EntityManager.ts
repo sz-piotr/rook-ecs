@@ -2,13 +2,13 @@ import { Entity, Constructor, clearNotify } from './Entity'
 import { Query } from './Query'
 
 export class EntityManager {
-  private changed: Entity<any>[] = []
-  private removed: Entity<any>[] = []
+  private changed: Entity[] = []
+  private removed: Entity[] = []
   private queryAll = new Query([], [])
   private queries: Query[] = [this.queryAll]
   private queryMap: Record<string, Query[] | undefined> = { '': [this.queryAll] }
 
-  query = <T> (...components: Constructor<T>[]): Entity<T>[] => {
+  query = (...components: Constructor<any>[]): Entity[] => {
     const id = getQueryId(components)
     const queries = this.queryMap[id]
     if (queries) {
@@ -23,11 +23,11 @@ export class EntityManager {
     return query.entities
   }
 
-  scheduleUpdate = (entity: Entity<any>) => {
+  scheduleUpdate = (entity: Entity) => {
     this.changed.push(entity)
   }
 
-  scheduleRemove = (entity: Entity<any>) => {
+  scheduleRemove = (entity: Entity) => {
     this.removed.push(entity)
   }
 

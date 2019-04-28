@@ -45,7 +45,7 @@ describe('Entity', () => {
   })
 
   it('get() should throw if component doesn\'t exist', () => {
-    const entity = new Entity<any>(() => { })
+    const entity = new Entity(() => { })
     entity.add(new ComponentA())
 
     expect(() => entity.get(ComponentA)).not.toThrow()
