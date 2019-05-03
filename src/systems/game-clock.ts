@@ -3,8 +3,8 @@ import { InitEvent } from './init-event'
 
 export class PhisicsTick {
   constructor(
-    readonly time: number,
-    readonly timeDelta: number,
+    readonly timestamp: number,
+    readonly deltaTime: number,
   ) {}
 }
 
@@ -23,7 +23,7 @@ function scheduleTimeout (callback: () => void) {
 const scheduleDefault = typeof requestAnimationFrame === 'function' ? scheduleRaf : scheduleTimeout
 
 export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
-  const timeDelta = 1000 / ticksPerSecond
+  const deltaMs = 1000 / ticksPerSecond
   return system(InitEvent, function (world) {
     let lastTime = Date.now()
     let stop = () => {}
@@ -33,8 +33,8 @@ export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
       const now = Date.now()
 
       while (lastTime < now) {
-        world.emit(new PhisicsTick(now, timeDelta))
-        lastTime += timeDelta
+        world.emit(new PhisicsTick(now, 1 / ticksPerSecond))
+        lastTime += deltaMs
       }
       world.emit(new RenderTick())
 
