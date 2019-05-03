@@ -1,4 +1,4 @@
-import { Constructor, Entity } from './Entity'
+import { Constructor, Entity } from './entity'
 
 export type EntitySelector = ((entity: Entity) => boolean) & { cache?: boolean }
 

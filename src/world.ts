@@ -1,4 +1,4 @@
-import { Entity, Instance } from './Entity'
+import { Entity, Instance } from './entity'
 import { EntitySelector } from './selector'
 
 export interface World<E> {

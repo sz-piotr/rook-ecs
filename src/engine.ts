@@ -1,9 +1,9 @@
 import { System, InitEvent } from './systems'
-import { Entity } from './Entity'
-import { World } from './World'
-import { EntityManager } from './EntityManager'
+import { Entity } from './entity'
+import { World } from './world'
+import { EntityManager } from './entity-manager'
 
-export function startGame (systems: System<any>[]) {
+export function start (systems: System<any>[]) {
   const cleanups: (() => void)[] = []
   const events: any[] = []
   const entityManager = new EntityManager()

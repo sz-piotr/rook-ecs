@@ -1,5 +1,5 @@
-import { World } from '../World'
-import { Constructor } from '../Entity'
+import { World } from '../world'
+import { Constructor } from '../entity'
 
 export type System<E> = (world: World<E>) => void | (() => void)
 

@@ -1,3 +1,3 @@
 export { System, system } from './system'
-export { InitEvent } from './InitEvent'
-export { gameClock, PhisicsTick, RenderTick } from './gameClock'
+export { InitEvent } from './init-event'
+export { gameClock, PhisicsTick, RenderTick } from './game-clock'

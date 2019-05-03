@@ -1,4 +1,4 @@
-import { Entity } from './Entity'
+import { Entity } from './entity'
 import { EntitySelector } from './selector'
 
 export class Query {

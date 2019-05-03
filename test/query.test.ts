@@ -1,4 +1,4 @@
-import { Query } from '../src/Query'
+import { Query } from '../src/query'
 import { Entity, selectAll } from '../src'
 
 class ComponentA {}

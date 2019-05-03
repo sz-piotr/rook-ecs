@@ -1,4 +1,4 @@
-import { Entity, clearNotify } from '../src/Entity'
+import { Entity, clearNotify } from '../src/entity'
 
 class ComponentA { }
 class ComponentB { }

@@ -1,5 +1,5 @@
 import { system } from './system'
-import { InitEvent } from './InitEvent'
+import { InitEvent } from './init-event'
 
 export class PhisicsTick {
   constructor(

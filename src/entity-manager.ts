@@ -1,5 +1,5 @@
-import { Entity, clearNotify } from './Entity'
-import { Query } from './Query'
+import { Entity, clearNotify } from './entity'
+import { Query } from './query'
 import { EntitySelector } from './selector'
 
 export class EntityManager {

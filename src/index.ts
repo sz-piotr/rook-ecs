@@ -1,4 +1,4 @@
-export { startGame } from './game'
-export { Entity } from './Entity'
+export { start } from './engine'
+export { Entity } from './entity'
 export * from './systems'
 export { selectAll, createCachedSelector } from './selector'
