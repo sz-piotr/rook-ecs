@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
     "sourceMap": true,
     "target": "es5",
     "lib": [
@@ -12,8 +11,5 @@
     "declaration": true,
     "strict": true,
     "noUnusedLocals": true
-  },
-  "include": [
-    "src"
-  ]
+  }
 }
