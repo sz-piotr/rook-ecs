@@ -1,4 +1,4 @@
 export { start } from './engine'
-export { Entity } from './entity'
+export { Entity, ComponentClass } from './entity'
+export { World } from './world'
 export * from './systems'
-export { selectAll, createCachedSelector } from './selector'

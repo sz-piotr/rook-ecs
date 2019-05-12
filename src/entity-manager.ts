@@ -1,24 +1,24 @@
-import { Entity, clearNotify } from './entity'
-import { Query } from './query'
-import { EntitySelector } from './selector'
+import { Entity, ComponentClass, clearNotify } from './entity'
+import { Query, hasAll } from './query'
 
 export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
   private queryAll = new Query(() => true, [])
   private queries: Query[] = [this.queryAll]
-  private queryMap = new Map<EntitySelector, Query>()
+  private queryMap = new Map<string, Query>()
 
-  query = (selector: EntitySelector): Entity[] => {
-    if (!selector.cache) {
-      return this.queryAll.entities.filter(selector)
-    }
-    const existingQuery = this.queryMap.get(selector)
+  query = (...components: ComponentClass<any>[]): Entity[] => {
+    const queryId = getQueryId(components)
+    const existingQuery = this.queryMap.get(queryId)
     if (existingQuery) {
       return existingQuery.entities
     } else {
-      const newQuery = new Query(selector, this.queryAll.entities)
-      this.queryMap.set(selector, newQuery)
+      const newQuery = new Query(
+        hasAll(components),
+        this.queryAll.entities,
+      )
+      this.queryMap.set(queryId, newQuery)
       this.queries.push(newQuery)
       return newQuery.entities
     }
@@ -37,4 +37,8 @@ export class EntityManager {
     this.removed.forEach(clearNotify)
     this.removed.length = 0
   }
+}
+
+function getQueryId (components: ComponentClass<any>[]) {
+  return components.map(component => component.type).sort().join(' ')
 }

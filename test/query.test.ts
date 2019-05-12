@@ -1,27 +1,27 @@
-import { Query } from '../src/query'
-import { Entity, selectAll } from '../src'
+import { Query, hasAll } from '../src/query'
+import { Entity } from '../src'
 
-class ComponentA {}
-class ComponentB {}
+class A { static type = 'A' }
+class B { static type = 'B' }
 
-const selector = selectAll(ComponentA)
+const selector = hasAll([A])
 
 describe('Query', () => {
   it('onChange should correctly modify the entities list', () => {
     const query = new Query(selector, [])
     const entity = new Entity(() => {})
-      .add(new ComponentA())
+      .add(new A())
 
     query.onChange(entity)
 
     expect(query.entities).toEqual([entity])
 
-    entity.add(new ComponentB())
+    entity.add(new B())
     query.onChange(entity)
 
     expect(query.entities).toEqual([entity])
 
-    entity.remove(ComponentA)
+    entity.remove(A)
 
     query.onChange(entity)
     expect(query.entities).toEqual([])
@@ -30,7 +30,7 @@ describe('Query', () => {
   it('onRemove should correctly modify the entities list', () => {
     const query = new Query(selector, [])
     const entity = new Entity(() => {})
-      .add(new ComponentA())
+      .add(new A())
 
     query.onChange(entity)
     expect(query.entities).toEqual([entity])
@@ -42,8 +42,8 @@ describe('Query', () => {
   it('handles multiple entities', () => {
     const query = new Query(selector, [])
 
-    const entityA = new Entity(() => {}).add(new ComponentA())
-    const entityB = new Entity(() => {}).add(new ComponentA())
+    const entityA = new Entity(() => {}).add(new A())
+    const entityB = new Entity(() => {}).add(new A())
 
     query.onChange(entityA)
     query.onChange(entityB)
@@ -64,12 +64,12 @@ describe('Query', () => {
   })
 
   it('filters its entities initially', () => {
-    const entity1 = new Entity(() => {}).add(new ComponentA())
-    const entity2 = new Entity(() => {}).add(new ComponentA())
+    const entity1 = new Entity(() => {}).add(new A())
+    const entity2 = new Entity(() => {}).add(new A())
     const query = new Query(selector, [
       entity1,
       entity2,
-      new Entity(() => {}).add(new ComponentB()),
+      new Entity(() => {}).add(new B()),
     ])
 
     expect(query.entities).toEqual([entity1, entity2])
@@ -77,14 +77,14 @@ describe('Query', () => {
 
   it('handles multiple components', () => {
     const entity1 = new Entity(() => {})
-      .add(new ComponentA())
-      .add(new ComponentB())
+      .add(new A())
+      .add(new B())
     const entity2 = new Entity(() => {})
-      .add(new ComponentA())
+      .add(new A())
     const entity3 = new Entity(() => {})
 
     const query = new Query(
-      selectAll(ComponentA, ComponentB),
+      hasAll([A, B]),
       [entity1, entity2, entity3],
     )
 

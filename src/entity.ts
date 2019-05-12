@@ -1,10 +1,10 @@
-export type Instance = { constructor: Function }
-export interface Constructor<T> {
+export interface ComponentClass<T> {
   new (...args: any[]): T
+  type: string
 }
 
 export class Entity {
-  private components = new Map<Constructor<any>, any>()
+  private components: Record<string, any> = {}
   private didNotify = false
   private notify: () => void
 
@@ -22,34 +22,34 @@ export class Entity {
       throw new TypeError('Argument is not a component instance.')
     }
 
-    const componentType = component.constructor
+    const componentClass = component.constructor
 
-    if ((componentType as any) === Object || typeof componentType !== 'function') {
+    if (!isComponentClass(componentClass)) {
       throw new TypeError('Argument is not a component instance.')
-    } else if (this.components.has(componentType)) {
+    } else if (this.has(componentClass)) {
       throw new Error('Component type already present.')
     }
 
-    this.components.set(componentType, component)
+    this.components[componentClass.type] = component
     this.notify()
 
     return this
   }
 
-  has <U> (componentType: Constructor<U>): boolean {
-    if (typeof componentType !== 'function') {
-      throw new TypeError('Argument is not a component type.')
+  has <U> (componentClass: ComponentClass<U>): boolean {
+    if (!isComponentClass(componentClass)) {
+      throw new TypeError('Argument is not a component class.')
     }
 
-    return this.components.has(componentType)
+    return this.components.hasOwnProperty(componentClass.type)
   }
 
-  get <U> (componentType: Constructor<U>): U {
-    if (typeof componentType !== 'function') {
-      throw new TypeError('Argument is not a component type.')
+  get <U> (componentClass: ComponentClass<U>): U {
+    if (typeof componentClass !== 'function') {
+      throw new TypeError('Argument is not a component class.')
     }
 
-    const component = this.components.get(componentType) as U
+    const component = this.components[componentClass.type] as U
 
     if (!component) {
       throw new TypeError('Component type not present.')
@@ -58,16 +58,20 @@ export class Entity {
     return component
   }
 
-  remove (componentType: Constructor<any>): this {
-    if (typeof componentType !== 'function') {
-      throw new TypeError('Argument is not a component type.')
+  remove (componentClass: ComponentClass<any>): this {
+    if (typeof componentClass !== 'function') {
+      throw new TypeError('Argument is not a component class.')
     }
 
-    this.components.delete(componentType)
+    delete this.components[componentClass.type]
     this.notify()
 
     return this as any
   }
+}
+
+function isComponentClass (value: unknown): value is ComponentClass<any> {
+  return typeof value === 'function' && typeof (value as any).type !== 'string'
 }
 
 export function clearNotify (entity: Entity) {

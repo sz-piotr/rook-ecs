@@ -1,12 +1,16 @@
 import { Entity } from './entity'
-import { EntitySelector } from './selector'
+import { ComponentClass } from './component'
+
+export function hasAll (components: ComponentClass<any>[]) {
+  return (entity: Entity) => components.every(component => entity.has(component))
+}
 
 export class Query {
   entities: Entity[]
   private indices = new WeakMap<Entity, number>()
 
   constructor (
-    private selector: EntitySelector,
+    private selector: (entity: Entity) => boolean,
     entities: Entity[],
   ) {
     this.entities = entities.filter(this.selector)

@@ -9,6 +9,16 @@ export function start (systems: System<any>[]) {
   const entityManager = new EntityManager()
   let running = false
 
+  function createWorld (event: any) {
+    return {
+      event,
+      query: entityManager.query,
+      add,
+      remove: entityManager.scheduleRemove,
+      emit
+    }
+  }
+
   function add (components: any[] = []) {
     return components.reduce(
       (e: Entity, c) => e.add(c),
@@ -26,15 +36,11 @@ export function start (systems: System<any>[]) {
 
   function runSystems (event: any) {
     running = true
-    const world = {
-      event,
-      query: entityManager.query,
-      add,
-      remove: entityManager.scheduleRemove,
-      emit
+    const world = createWorld(event)
+    for (const system of systems) {
+      runSystem(system, world)
+      entityManager.processUpdates()
     }
-    systems.forEach(system => runSystem(system, world))
-    entityManager.processUpdates()
     running = false
   }
 
