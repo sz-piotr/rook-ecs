@@ -1,4 +1,4 @@
-import { system } from './system'
+import { createSystem } from './createSystem'
 import { InitEvent } from './init-event'
 
 export class PhisicsTick {
@@ -24,7 +24,7 @@ const scheduleDefault = typeof requestAnimationFrame === 'function' ? scheduleRa
 
 export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
   const deltaMs = 1000 / ticksPerSecond
-  return system(InitEvent, function (world) {
+  return createSystem(InitEvent, function (world) {
     let lastTime = Date.now()
     let stop = () => {}
 

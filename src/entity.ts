@@ -71,7 +71,7 @@ export class Entity {
 }
 
 function isComponentClass (value: unknown): value is ComponentClass<any> {
-  return typeof value === 'function' && typeof (value as any).type !== 'string'
+  return typeof value === 'function' && typeof (value as any).type === 'string'
 }
 
 export function clearNotify (entity: Entity) {
