@@ -5,14 +5,16 @@ export function hasAll (components: ComponentClass<any>[]) {
 }
 
 export class Query {
-  entities: Entity[]
-  private indices = new WeakMap<Entity, number>()
+  entities: Entity[] = []
+  private indices = new Map<Entity, number>()
 
   constructor (
     private selector: (entity: Entity) => boolean,
     entities: Entity[],
   ) {
-    this.entities = entities.filter(this.selector)
+    entities
+      .filter(this.selector)
+      .forEach(entity => this.onChange(entity))
   }
 
   onChange (entity: Entity) {
@@ -34,6 +36,7 @@ export class Query {
         this.entities[index] = last
         this.indices.set(last, index)
       }
+      this.indices.delete(entity)
     }
   }
 }

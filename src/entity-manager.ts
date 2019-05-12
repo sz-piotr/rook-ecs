@@ -4,31 +4,26 @@ import { Query, hasAll } from './query'
 export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
-  private queryAll = new Query(() => true, [])
-  private queries: Query[] = [this.queryAll]
-  private queryMap = new Map<string, Query>()
+  private queries: Record<string, Query> = {
+    '': new Query(() => true, []),
+  }
 
-  query = (...components: ComponentClass<any>[]): Entity[] => {
+  query = (...components: ComponentClass<any>[]): readonly Entity[] => {
     const queryId = getQueryId(components)
-    const existingQuery = this.queryMap.get(queryId)
-    if (existingQuery) {
-      return existingQuery.entities
-    } else {
-      const newQuery = new Query(
+    if (!this.queries[queryId]) {
+      this.queries[queryId] = new Query(
         hasAll(components),
-        this.queryAll.entities,
+        this.queries[''].entities,
       )
-      this.queryMap.set(queryId, newQuery)
-      this.queries.push(newQuery)
-      return newQuery.entities
     }
+    return this.queries[queryId].entities
   }
 
   scheduleUpdate = (entity: Entity) => this.changed.push(entity)
   scheduleRemove = (entity: Entity) => this.removed.push(entity)
 
   processUpdates () {
-    for (const query of this.queries) {
+    for (const query of Object.values(this.queries)) {
       this.changed.forEach(entity => query.onChange(entity))
       this.removed.forEach(entity => query.onRemove(entity))
     }
@@ -40,5 +35,5 @@ export class EntityManager {
 }
 
 function getQueryId (components: ComponentClass<any>[]) {
-  return components.map(component => component.type).sort().join(' ')
+  return components.map(component => component.type).sort().join('+')
 }

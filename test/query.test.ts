@@ -5,12 +5,12 @@ class A { static type = 'A' }
 class B { static type = 'B' }
 
 const selector = hasAll([A])
+const createEntity = () => new Entity(() => {})
 
 describe('Query', () => {
   it('onChange should correctly modify the entities list', () => {
     const query = new Query(selector, [])
-    const entity = new Entity(() => {})
-      .add(new A())
+    const entity = createEntity().add(new A())
 
     query.onChange(entity)
 
@@ -29,8 +29,7 @@ describe('Query', () => {
 
   it('onRemove should correctly modify the entities list', () => {
     const query = new Query(selector, [])
-    const entity = new Entity(() => {})
-      .add(new A())
+    const entity = createEntity().add(new A())
 
     query.onChange(entity)
     expect(query.entities).toEqual([entity])
@@ -42,8 +41,8 @@ describe('Query', () => {
   it('handles multiple entities', () => {
     const query = new Query(selector, [])
 
-    const entityA = new Entity(() => {}).add(new A())
-    const entityB = new Entity(() => {}).add(new A())
+    const entityA = createEntity().add(new A())
+    const entityB = createEntity().add(new A())
 
     query.onChange(entityA)
     query.onChange(entityB)
@@ -56,7 +55,7 @@ describe('Query', () => {
 
   it('handles unknown entities', () => {
     const query = new Query(selector, [])
-    const entity = new Entity(() => {})
+    const entity = createEntity()
 
     query.onRemove(entity)
 
@@ -64,24 +63,21 @@ describe('Query', () => {
   })
 
   it('filters its entities initially', () => {
-    const entity1 = new Entity(() => {}).add(new A())
-    const entity2 = new Entity(() => {}).add(new A())
+    const entity1 = createEntity().add(new A())
+    const entity2 = createEntity().add(new A())
     const query = new Query(selector, [
       entity1,
       entity2,
-      new Entity(() => {}).add(new B()),
+      createEntity().add(new B()),
     ])
 
     expect(query.entities).toEqual([entity1, entity2])
   })
 
   it('handles multiple components', () => {
-    const entity1 = new Entity(() => {})
-      .add(new A())
-      .add(new B())
-    const entity2 = new Entity(() => {})
-      .add(new A())
-    const entity3 = new Entity(() => {})
+    const entity1 = createEntity().add(new A()).add(new B())
+    const entity2 = createEntity().add(new A())
+    const entity3 = createEntity()
 
     const query = new Query(
       hasAll([A, B]),
