@@ -4,8 +4,8 @@ import { EntityManager } from './EntityManager'
 import { System } from './System'
 
 export class World {
+  private entityManager = new EntityManager()
   constructor (
-    private entityManager: EntityManager,
     private systems: System<any>[]
   ) {}
 

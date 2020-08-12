@@ -51,39 +51,40 @@ In the browser all of the exports are available under the `Rook` global object.
 
 ## Usage Example
 
-First we declare the components. These are just plain classes (here implemented in TypeScript).
-The only difference is the static `type` property present on the class.
+First we declare the components. Components are just ids that correspond to some
+data. In JavaScript you don't need to declare anything, just use pure strings.
+
+In TypeScript there is a special `component` function that creates type safe
+component ids.
 
 ```typescript
-class Position {
-  static type = 'Position'
-  constructor (
-    public x: number,
-    public y: number
-  ) {}
-}
+import { component } from 'rook-ecs'
 
-class Velocity {
-  static type = 'Velocity'
-  constructor (
-    public x: number,
-    public y: number
-  ) {}
+export interface Position {
+  x: number,
+  y: number,
 }
+export const Position = component<Position>('Position')
+
+export interface Velocity {
+  x: number,
+  y: number,
+}
+export const Velocity = component<Velocity>('Velocity')
 ```
 
 Having declared our components we can now use them in a system.
 
 ```typescript
-import { createSystem, UpdateTick } from 'rook-ecs'
+import { system, UpdateTick } from 'rook-ecs'
 import { Position, Velocity } from './components'
 
-export const move = createSystem(UpdateTick, function (world) {
+export const move = system(UpdateTick, function (world, event) {
   for (const entity of world.query(Position, Velocity)) {
     const position = entity.get(Position)
     const velocity = entity.get(Velocity)
-    position.x += velocity.x * world.event.deltaTime
-    position.y += velocity.y * world.event.deltaTime
+    position.x += velocity.x * event.deltaTime
+    position.y += velocity.y * event.deltaTime
   }
 })
 ```
@@ -95,13 +96,13 @@ The only thing that's left is to start the game and create some entities.
 
 ```typescript
 import { start, gameClock } from 'rook-ecs'
+import { Position, Velocity } from './components'
 import { move } from './move'
 
 function init (world) {
-  world.add([
-    new Position(0, 0),
-    new Velocity(10, 20)
-  ])
+  world.create()
+    .add(Position, { x: 0, y: 0 })
+    .add(Velocity, { x: 10, y: 20 })
 }
 
 start([

@@ -41,7 +41,3 @@ export class Entity {
     return this
   }
 }
-
-export function clearNotify (entity: Entity) {
-  entity['didNotify'] = false
-}

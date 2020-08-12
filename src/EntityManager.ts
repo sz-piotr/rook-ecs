@@ -1,4 +1,4 @@
-import { Entity, clearNotify } from './Entity'
+import { Entity } from './Entity'
 import { Component } from './Component'
 import { Query } from './Query'
 
@@ -37,8 +37,9 @@ export class EntityManager {
       this.changed.forEach(entity => query.onChange(entity))
       this.removed.forEach(entity => query.onRemove(entity))
     }
-    this.changed.forEach(clearNotify)
+    this.changed.forEach(entity => { entity['didNotify'] = false })
     this.changed.length = 0
+    this.removed.forEach(entity => { entity['didNotify'] = true })
     this.removed.length = 0
   }
 }

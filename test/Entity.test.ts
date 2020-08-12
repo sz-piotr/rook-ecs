@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Entity, clearNotify } from '../src/Entity'
+import { Entity } from '../src/Entity'
 import { component } from '../src'
 
 const A = component<number>('A')
@@ -60,7 +60,7 @@ describe('Entity', () => {
     entity.remove(A)
 
     expect(callValue).to.equal(undefined)
-    clearNotify(entity)
+    entity['didNotify'] = false
 
     entity.remove(B)
 
