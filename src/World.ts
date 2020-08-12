@@ -46,7 +46,7 @@ export class World {
     callback()
     this.entityManager.processUpdates()
     while (this.events.length > 0) {
-      const event = this.events.pop()
+      const event = this.events.shift()
       for (const system of this.systems) {
         system(this, event)
         this.entityManager.processUpdates()
