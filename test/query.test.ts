@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import { Query, hasAll } from '../src/query'
 import { Entity } from '../src'
 
@@ -14,17 +15,17 @@ describe('Query', () => {
 
     query.onChange(entity)
 
-    expect(query.entities).toEqual([entity])
+    expect(query.entities).to.deep.equal([entity])
 
     entity.add(new B())
     query.onChange(entity)
 
-    expect(query.entities).toEqual([entity])
+    expect(query.entities).to.deep.equal([entity])
 
     entity.remove(A)
 
     query.onChange(entity)
-    expect(query.entities).toEqual([])
+    expect(query.entities).to.deep.equal([])
   })
 
   it('onRemove should correctly modify the entities list', () => {
@@ -32,10 +33,10 @@ describe('Query', () => {
     const entity = createEntity().add(new A())
 
     query.onChange(entity)
-    expect(query.entities).toEqual([entity])
+    expect(query.entities).to.deep.equal([entity])
 
     query.onRemove(entity)
-    expect(query.entities).toEqual([])
+    expect(query.entities).to.deep.equal([])
   })
 
   it('handles multiple entities', () => {
@@ -46,11 +47,11 @@ describe('Query', () => {
 
     query.onChange(entityA)
     query.onChange(entityB)
-    expect(query.entities).toEqual([entityA, entityB])
+    expect(query.entities).to.deep.equal([entityA, entityB])
 
     query.onRemove(entityA)
     query.onRemove(entityB)
-    expect(query.entities).toEqual([])
+    expect(query.entities).to.deep.equal([])
   })
 
   it('handles unknown entities', () => {
@@ -59,7 +60,7 @@ describe('Query', () => {
 
     query.onRemove(entity)
 
-    expect(query.entities).toEqual([])
+    expect(query.entities).to.deep.equal([])
   })
 
   it('filters its entities initially', () => {
@@ -71,7 +72,7 @@ describe('Query', () => {
       createEntity().add(new B()),
     ])
 
-    expect(query.entities).toEqual([entity1, entity2])
+    expect(query.entities).to.deep.equal([entity1, entity2])
   })
 
   it('handles multiple components', () => {
@@ -84,6 +85,6 @@ describe('Query', () => {
       [entity1, entity2, entity3],
     )
 
-    expect(query.entities).toEqual([entity1])
+    expect(query.entities).to.deep.equal([entity1])
   })
 })

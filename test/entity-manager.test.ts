@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import { Entity } from '../src/entity'
 import { EntityManager } from '../src/entity-manager'
 
@@ -10,7 +11,7 @@ describe('EntityManager', () => {
 
     const entites = em.query(A, B)
 
-    expect(entites).toEqual([])
+    expect(entites).to.deep.equal([])
   })
 
   it('query returns empty array when no updates have been processed', () => {
@@ -22,7 +23,7 @@ describe('EntityManager', () => {
 
     const entites = em.query(A, B)
 
-    expect(entites).toEqual([])
+    expect(entites).to.deep.equal([])
   })
 
   it('query returns matched entites after updates are processed', () => {
@@ -34,7 +35,7 @@ describe('EntityManager', () => {
     em.processUpdates()
     const entites = em.query(A, B)
 
-    expect(entites).toEqual([entity1, entity2])
+    expect(entites).to.deep.equal([entity1, entity2])
   })
 
   it('query returns entities that have been changed after processUpdates', () => {
@@ -44,12 +45,12 @@ describe('EntityManager', () => {
     em.processUpdates()
     const before = em.query(A, B)
 
-    expect(before).toEqual([entity])
+    expect(before).to.deep.equal([entity])
 
     entity.remove(A)
     const after = em.query(A, B)
 
-    expect(after).toEqual([entity])
+    expect(after).to.deep.equal([entity])
   })
 
   it('queryOne returns a single entity', () => {
@@ -60,13 +61,13 @@ describe('EntityManager', () => {
     em.processUpdates()
     const result = em.queryOne(A)
 
-    expect(result === first || result === second).toEqual(true)
+    expect(result === first || result === second).to.equal(true)
   })
 
   it('queryOne can return undefined', () => {
     const em = new EntityManager()
     const result = em.queryOne(A)
-    expect(result).toEqual(undefined)
+    expect(result).to.equal(undefined)
   })
 
   it('processUpdates updates the entity array', () => {
@@ -76,13 +77,13 @@ describe('EntityManager', () => {
     em.processUpdates()
     const before = em.query(A, B)
 
-    expect(before).toEqual([entity])
+    expect(before).to.deep.equal([entity])
 
     entity.remove(A)
     em.processUpdates()
     const after = em.query(A, B)
 
-    expect(after).toEqual([])
+    expect(after).to.deep.equal([])
   })
 
   it('processUpdates removes removed entites', () => {
@@ -92,12 +93,12 @@ describe('EntityManager', () => {
     em.processUpdates()
     const before = em.query(A, B)
 
-    expect(before).toEqual([entity])
+    expect(before).to.deep.equal([entity])
 
     em.scheduleRemove(entity)
     em.processUpdates()
     const after = em.query(A, B)
 
-    expect(after).toEqual([])
+    expect(after).to.deep.equal([])
   })
 })

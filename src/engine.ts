@@ -23,7 +23,7 @@ export function start (systems: System<any>[]) {
   function add (components: any[] = []) {
     return components.reduce(
       (e: Entity, c) => e.add(c),
-      new Entity(entityManager.scheduleUpdate),
+      new Entity(entityManager.scheduleUpdate)
     )
   }
 

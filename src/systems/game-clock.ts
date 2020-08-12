@@ -2,9 +2,9 @@ import { createSystem } from './createSystem'
 import { InitEvent } from './init-event'
 
 export class UpdateTick {
-  constructor(
+  constructor (
     readonly timestamp: number,
-    readonly deltaTime: number,
+    readonly deltaTime: number
   ) {}
 }
 
@@ -26,7 +26,7 @@ export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
   const deltaMs = 1000 / ticksPerSecond
   return createSystem(InitEvent, function (world) {
     let lastTime = Date.now()
-    let stop = () => {}
+    let stop = (): void => undefined
 
     update()
     function update () {

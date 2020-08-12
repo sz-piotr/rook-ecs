@@ -5,7 +5,7 @@ export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
   private queries: Record<string, Query> = {
-    '': new Query(() => true, []),
+    '': new Query(() => true, [])
   }
 
   query = (...components: ComponentClass<any>[]): readonly Entity[] => {
@@ -13,7 +13,7 @@ export class EntityManager {
     if (!this.queries[queryId]) {
       this.queries[queryId] = new Query(
         hasAll(components),
-        this.queries[''].entities,
+        this.queries[''].entities
       )
     }
     return this.queries[queryId].entities

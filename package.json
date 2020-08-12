@@ -27,24 +27,28 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf dist && yarn build:esm && yarn build:cjs && yarn build:umd && yarn build:min",
+    "build": "rm -rf dist && yarn build:esm && yarn build:cjs",
     "build:esm": "tsc -p tsconfig.build.json --outDir dist/esm --module ES6",
     "build:cjs": "tsc -p tsconfig.build.json --outDir dist/cjs --declaration false",
-    "build:umd": "rollup -f umd -n Rook -o dist/umd/rook-ecs.js dist/cjs/index.js",
-    "build:min": "uglifyjs -cmo dist/umd/rook-ecs.min.js dist/umd/rook-ecs.js",
-    "test": "jest",
-    "test:watch": "jest --watchAll"
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "mocha",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "jest": "^24.7.1",
-    "rollup": "^1.10.1",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5",
-    "uglify-js": "^3.5.8"
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.2",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.6.0",
+    "mocha": "^8.1.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testRegex": "\\.(test|spec)\\.(jsx?|tsx?)$"
+  "mocha": {
+    "watch-extensions": "ts",
+    "extension": "ts",
+    "recursive": true,
+    "require": "ts-node/register/transpile-only"
   }
 }

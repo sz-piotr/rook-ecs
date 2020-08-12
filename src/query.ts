@@ -10,7 +10,7 @@ export class Query {
 
   constructor (
     private selector: (entity: Entity) => boolean,
-    entities: Entity[],
+    entities: Entity[]
   ) {
     entities
       .filter(this.selector)
@@ -31,7 +31,7 @@ export class Query {
   onRemove (entity: Entity) {
     const index = this.indices.get(entity)
     if (index != null) {
-      const last = <Entity>this.entities.pop()
+      const last = <Entity> this.entities.pop()
       if (last !== entity) {
         this.entities[index] = last
         this.indices.set(last, index)
