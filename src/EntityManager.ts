@@ -5,11 +5,16 @@ import { Query, hasAll } from './query'
 export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
+
   private queries: Record<string, Query> = {
     '': new Query(() => true, [])
   }
 
-  query = (...components: Component<any>[]): readonly Entity[] => {
+  create () {
+    return new Entity(this.scheduleUpdate)
+  }
+
+  query (...components: Component<any>[]): readonly Entity[] {
     const queryId = getQueryId(components)
     if (!this.queries[queryId]) {
       this.queries[queryId] = new Query(
@@ -20,12 +25,15 @@ export class EntityManager {
     return this.queries[queryId].entities
   }
 
-  queryOne = (...components: Component<any>[]): Entity | undefined => {
+  queryOne (...components: Component<any>[]): Entity | undefined {
     return this.query(...components)[0]
   }
 
   scheduleUpdate = (entity: Entity) => this.changed.push(entity)
-  scheduleRemove = (entity: Entity) => this.removed.push(entity)
+
+  scheduleRemove (entity: Entity) {
+    this.removed.push(entity)
+  }
 
   processUpdates () {
     for (const query of Object.values(this.queries)) {

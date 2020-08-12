@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { Entity } from '../src/entity'
-import { EntityManager } from '../src/entity-manager'
+import { EntityManager } from '../src/EntityManager'
 import { component } from '../src'
 
 const A = component<number>('A')

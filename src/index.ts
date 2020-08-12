@@ -1,5 +1,5 @@
-export { start } from './engine'
+export { start } from './start'
 export { Entity } from './entity'
 export { World } from './world'
 export { Component, component } from './component'
-export * from './systems'
+export * from './system'
