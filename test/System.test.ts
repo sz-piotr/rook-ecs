@@ -4,7 +4,7 @@ import { system } from '../src/System'
 class EventA {}
 class EventB {}
 
-describe('createSystem', () => {
+describe('system', () => {
   it('calls the callback when the event matches', () => {
     let callValues = undefined
     const mySystem = system(EventA, (...args) => { callValues = args })
