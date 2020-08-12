@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { system } from '../src/system'
+import { system } from '../src/System'
 
 class EventA {}
 class EventB {}

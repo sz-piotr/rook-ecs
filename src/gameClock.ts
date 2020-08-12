@@ -1,4 +1,4 @@
-import { system } from './system'
+import { system } from './System'
 import { InitEvent, UpdateTick, RenderTick } from './events'
 
 function scheduleRaf (callback: () => void) {

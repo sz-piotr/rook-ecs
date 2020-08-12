@@ -1,6 +1,6 @@
-import { Entity, clearNotify } from './entity'
-import { Component } from './component'
-import { Query, hasAll } from './query'
+import { Entity, clearNotify } from './Entity'
+import { Component } from './Component'
+import { Query, hasAll } from './Query'
 
 export class EntityManager {
   private changed: Entity[] = []

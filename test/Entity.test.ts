@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Entity, clearNotify } from '../src/entity'
+import { Entity, clearNotify } from '../src/Entity'
 import { component } from '../src'
 
 const A = component<number>('A')

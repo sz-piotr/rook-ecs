@@ -1,7 +1,7 @@
-import { Entity } from './entity'
-import { Component } from './component'
+import { Entity } from './Entity'
+import { Component } from './Component'
 import { EntityManager } from './EntityManager'
-import { System } from './system'
+import { System } from './System'
 
 export class World {
   constructor (

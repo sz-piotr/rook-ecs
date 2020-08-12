@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Query, hasAll } from '../src/query'
+import { Query, hasAll } from '../src/Query'
 import { Entity, component } from '../src'
 
 const A = component<number>('A')

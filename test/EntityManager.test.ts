@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Entity } from '../src/entity'
+import { Entity } from '../src/Entity'
 import { EntityManager } from '../src/EntityManager'
 import { component } from '../src'
 

@@ -1,6 +1,6 @@
-import { System } from './system'
+import { System } from './System'
 import { InitEvent } from './events'
-import { World } from './world'
+import { World } from './World'
 import { EntityManager } from './EntityManager'
 
 export function start (systems: System<any>[]) {

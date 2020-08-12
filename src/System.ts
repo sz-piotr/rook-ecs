@@ -1,4 +1,4 @@
-import { World } from './world'
+import { World } from './World'
 
 export type System<E> = (world: World, event: E) => void
 
