@@ -13,6 +13,7 @@ export function start (systems: System<any>[]) {
     return {
       event,
       query: entityManager.query,
+      queryOne: entityManager.queryOne,
       add,
       remove: entityManager.scheduleRemove,
       emit

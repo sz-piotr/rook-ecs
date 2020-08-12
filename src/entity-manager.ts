@@ -19,6 +19,10 @@ export class EntityManager {
     return this.queries[queryId].entities
   }
 
+  queryOne = (...components: ComponentClass<any>[]): Entity | undefined => {
+    return this.query(...components)[0]
+  }
+
   scheduleUpdate = (entity: Entity) => this.changed.push(entity)
   scheduleRemove = (entity: Entity) => this.removed.push(entity)
 

@@ -52,6 +52,23 @@ describe('EntityManager', () => {
     expect(after).toEqual([entity])
   })
 
+  it('queryOne returns a single entity', () => {
+    const em = new EntityManager()
+    const first = new Entity(em.scheduleUpdate).add(new A())
+    const second = new Entity(em.scheduleUpdate).add(new A())
+
+    em.processUpdates()
+    const result = em.queryOne(A)
+
+    expect(result === first || result === second).toEqual(true)
+  })
+
+  it('queryOne can return undefined', () => {
+    const em = new EntityManager()
+    const result = em.queryOne(A)
+    expect(result).toEqual(undefined)
+  })
+
   it('processUpdates updates the entity array', () => {
     const em = new EntityManager()
     const entity = new Entity(em.scheduleUpdate).add(new A()).add(new B())
