@@ -22,7 +22,7 @@ export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
     function update () {
       world.run(() => {
         const now = Date.now()
-        while (lastTime < now) {
+        while (lastTime <= now) {
           world.emit(new UpdateTick(now, 1 / ticksPerSecond))
           lastTime += deltaMs
         }
