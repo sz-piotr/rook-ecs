@@ -1,7 +1,7 @@
 import { createSystem } from './createSystem'
 import { InitEvent } from './init-event'
 
-export class PhysicsTick {
+export class UpdateTick {
   constructor(
     readonly timestamp: number,
     readonly deltaTime: number,
@@ -33,7 +33,7 @@ export function gameClock (ticksPerSecond = 60, schedule = scheduleDefault) {
       const now = Date.now()
 
       while (lastTime < now) {
-        world.emit(new PhysicsTick(now, 1 / ticksPerSecond))
+        world.emit(new UpdateTick(now, 1 / ticksPerSecond))
         lastTime += deltaMs
       }
       world.emit(new RenderTick())

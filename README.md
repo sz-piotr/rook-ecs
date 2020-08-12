@@ -52,11 +52,11 @@ In the browser all of the exports are available under the `Rook` global object.
 ## Usage Example
 
 First we declare the components. These are just plain classes (here implemented in TypeScript).
-The only difference is the `id` property present on the class constructor.
+The only difference is the static `type` property present on the class.
 
 ```typescript
 class Position {
-  static id = 'Position'
+  static type = 'Position'
   constructor (
     public x: number,
     public y: number
@@ -64,7 +64,7 @@ class Position {
 }
 
 class Velocity {
-  static id = 'Velocity'
+  static type = 'Velocity'
   constructor (
     public x: number,
     public y: number
@@ -75,18 +75,17 @@ class Velocity {
 Having declared our components we can now use them in a system.
 
 ```typescript
-import { hasAll } from 'rook-ecs'
+import { createSystem, UpdateTick } from 'rook-ecs'
+import { Position, Velocity } from './components'
 
-const applyVelocity = {
-  query: hasAll(Position, Velocity),
-  on: 'tick',
-  processEntity (entity, world, { timeDelta }) {
+export const move = createSystem(UpdateTick, function (world) {
+  for (const entity of world.query(Position, Velocity)) {
     const position = entity.get(Position)
     const velocity = entity.get(Velocity)
-    position.x += velocity.x * timeDelta
-    position.y += velocity.y * timeDelta
+    position.x += velocity.x * world.event.deltaTime
+    position.y += velocity.y * world.event.deltaTime
   }
-}
+})
 ```
 
 And just like this, all our entities that have both the `Position` and `Velocity`
@@ -95,17 +94,21 @@ components can now be updated with this system.
 The only thing that's left is to start the game and create some entities.
 
 ```typescript
-import { Game } from 'rook-ecs'
-
-const systems = [applyVelocity]
+import { start, gameClock } from 'rook-ecs'
+import { move } from './move'
 
 function init (world) {
-  world.createEntity()
-    .add(new Position(0, 0))
-    .add(new Velocity(10, 20))
+  world.add([
+    new Position(0, 0),
+    new Velocity(10, 20)
+  ])
 }
 
-new Game(systems, init).start()
+start([
+  gameClock(),
+  init,
+  move,
+])
 ```
 
 ## Typescript support
