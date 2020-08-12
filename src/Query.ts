@@ -1,25 +1,21 @@
 import { Entity } from './Entity'
 import { Component } from './Component'
 
-export function hasAll (components: Component<any>[]) {
-  return (entity: Entity) => components.every(component => entity.has(component))
-}
-
 export class Query {
   entities: Entity[] = []
   private indices = new Map<Entity, number>()
 
   constructor (
-    private selector: (entity: Entity) => boolean,
+    private components: Component<any>[],
     entities: Entity[]
   ) {
-    entities
-      .filter(this.selector)
-      .forEach(entity => this.onChange(entity))
+    for (const entity of entities) {
+      this.onChange(entity)
+    }
   }
 
   onChange (entity: Entity) {
-    if (this.selector(entity)) {
+    if (this.components.every(component => entity.has(component))) {
       if (this.indices.get(entity) == null) {
         this.indices.set(entity, this.entities.length)
         this.entities.push(entity)

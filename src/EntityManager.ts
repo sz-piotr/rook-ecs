@@ -1,13 +1,13 @@
 import { Entity, clearNotify } from './Entity'
 import { Component } from './Component'
-import { Query, hasAll } from './Query'
+import { Query } from './Query'
 
 export class EntityManager {
   private changed: Entity[] = []
   private removed: Entity[] = []
 
   private queries: Record<string, Query> = {
-    '': new Query(() => true, [])
+    '': new Query([], [])
   }
 
   create () {
@@ -17,10 +17,7 @@ export class EntityManager {
   query (...components: Component<any>[]): readonly Entity[] {
     const queryId = getQueryId(components)
     if (!this.queries[queryId]) {
-      this.queries[queryId] = new Query(
-        hasAll(components),
-        this.queries[''].entities
-      )
+      this.queries[queryId] = new Query(components, this.queries[''].entities)
     }
     return this.queries[queryId].entities
   }
@@ -42,7 +39,6 @@ export class EntityManager {
     }
     this.changed.forEach(clearNotify)
     this.changed.length = 0
-    this.removed.forEach(clearNotify)
     this.removed.length = 0
   }
 }
