@@ -1,6 +1,7 @@
-import { Entity, ComponentClass } from './entity'
+import { Entity } from './entity'
+import { Component } from './component'
 
-export function hasAll (components: ComponentClass<any>[]) {
+export function hasAll (components: Component<any>[]) {
   return (entity: Entity) => components.every(component => entity.has(component))
 }
 

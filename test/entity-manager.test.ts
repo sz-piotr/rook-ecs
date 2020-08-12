@@ -1,46 +1,44 @@
 import { expect } from 'chai'
 import { Entity } from '../src/entity'
 import { EntityManager } from '../src/entity-manager'
+import { component } from '../src'
 
-class A { static type = 'A' }
-class B { static type = 'B' }
+const A = component<number>('A')
+const B = component<number>('B')
 
 describe('EntityManager', () => {
   it('query returns empty array if there are no entities', () => {
     const em = new EntityManager()
-
-    const entites = em.query(A, B)
-
-    expect(entites).to.deep.equal([])
+    const entities = em.query(A, B)
+    expect(entities).to.deep.equal([])
   })
 
   it('query returns empty array when no updates have been processed', () => {
     const em = new EntityManager()
 
     new Entity(em.scheduleUpdate)
-      .add(new A())
-      .add(new B())
+      .add(A, 1)
+      .add(B, 2)
 
-    const entites = em.query(A, B)
-
-    expect(entites).to.deep.equal([])
+    const entities = em.query(A, B)
+    expect(entities).to.deep.equal([])
   })
 
-  it('query returns matched entites after updates are processed', () => {
+  it('query returns matched entities after updates are processed', () => {
     const em = new EntityManager()
-    const entity1 = new Entity(em.scheduleUpdate).add(new A()).add(new B())
-    const entity2 = new Entity(em.scheduleUpdate).add(new A()).add(new B())
-    new Entity(em.scheduleUpdate).add(new A())
+    const entity1 = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
+    const entity2 = new Entity(em.scheduleUpdate).add(A, 3).add(B, 4)
+    new Entity(em.scheduleUpdate).add(A, 4)
 
     em.processUpdates()
-    const entites = em.query(A, B)
+    const entities = em.query(A, B)
 
-    expect(entites).to.deep.equal([entity1, entity2])
+    expect(entities).to.deep.equal([entity1, entity2])
   })
 
   it('query returns entities that have been changed after processUpdates', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(new A()).add(new B())
+    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)
@@ -55,8 +53,8 @@ describe('EntityManager', () => {
 
   it('queryOne returns a single entity', () => {
     const em = new EntityManager()
-    const first = new Entity(em.scheduleUpdate).add(new A())
-    const second = new Entity(em.scheduleUpdate).add(new A())
+    const first = new Entity(em.scheduleUpdate).add(A, 1)
+    const second = new Entity(em.scheduleUpdate).add(B, 2)
 
     em.processUpdates()
     const result = em.queryOne(A)
@@ -72,7 +70,7 @@ describe('EntityManager', () => {
 
   it('processUpdates updates the entity array', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(new A()).add(new B())
+    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)
@@ -86,9 +84,9 @@ describe('EntityManager', () => {
     expect(after).to.deep.equal([])
   })
 
-  it('processUpdates removes removed entites', () => {
+  it('processUpdates removes removed entities', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(new A()).add(new B())
+    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)

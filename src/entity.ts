@@ -1,7 +1,4 @@
-export interface ComponentClass<T> {
-  new (...args: any[]): T
-  type: string
-}
+import { Component } from './component'
 
 export class Entity {
   private components: Record<string, any> = {}
@@ -17,63 +14,34 @@ export class Entity {
     }
   }
 
-  add (component: any): this {
-    if (component == null) {
-      throw new TypeError('Argument is not a component instance.')
-    }
-
-    const componentClass = component.constructor
-
-    if (!isComponentClass(componentClass)) {
-      throw new TypeError('Argument is not a component instance.')
-    } else if (this.has(componentClass)) {
+  add <T> (component: Component<T>, value: T): this {
+    if (this.has(component)) {
       throw new Error('Component type already present.')
     }
-
-    this.components[componentClass.type] = component
+    this.components[component] = value
     this.notify()
-
     return this
   }
 
-  has <U> (componentClass: ComponentClass<U>): boolean {
-    if (!isComponentClass(componentClass)) {
-      throw new TypeError('Argument is not a component class.')
-    }
-
-    return this.components.hasOwnProperty(componentClass.type)
+  has (component: Component<any>): boolean {
+    return Object.prototype.hasOwnProperty.call(this.components, component)
   }
 
-  get <U> (componentClass: ComponentClass<U>): U {
-    if (typeof componentClass !== 'function') {
-      throw new TypeError('Argument is not a component class.')
-    }
-
-    const component = this.components[componentClass.type] as U
-
-    if (!component) {
+  get <T> (component: Component<T>): T {
+    const value = this.components[component]
+    if (!value) {
       throw new TypeError('Component type not present.')
     }
-
-    return component
+    return value
   }
 
-  remove (componentClass: ComponentClass<any>): this {
-    if (typeof componentClass !== 'function') {
-      throw new TypeError('Argument is not a component class.')
-    }
-
-    delete this.components[componentClass.type]
+  remove (component: Component<any>): this {
+    delete this.components[component]
     this.notify()
-
-    return this as any
+    return this
   }
-}
-
-function isComponentClass (value: unknown): value is ComponentClass<any> {
-  return typeof value === 'function' && typeof (value as any).type === 'string'
 }
 
 export function clearNotify (entity: Entity) {
-  (<any>entity).didNotify = false
+  entity['didNotify'] = false
 }

@@ -1,10 +1,11 @@
-import { Entity, ComponentClass } from './entity'
+import { Entity } from './entity'
+import { Component } from './component'
 
 export interface World<E> {
   event: E,
-  query (...components: ComponentClass<any>[]): readonly Entity[],
-  queryOne (...components: ComponentClass<any>[]): Entity | undefined,
-  add (components?: any[]): Entity,
+  query (...components: Component<any>[]): readonly Entity[],
+  queryOne (...components: Component<any>[]): Entity | undefined,
+  create (): Entity,
   remove (entity: Entity): void,
   emit (event: any): void
 }

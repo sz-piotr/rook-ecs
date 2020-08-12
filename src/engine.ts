@@ -9,22 +9,19 @@ export function start (systems: System<any>[]) {
   const entityManager = new EntityManager()
   let running = false
 
-  function createWorld (event: any) {
+  function createWorld <T> (event: T): World<T> {
     return {
       event,
       query: entityManager.query,
       queryOne: entityManager.queryOne,
-      add,
+      create,
       remove: entityManager.scheduleRemove,
       emit
     }
   }
 
-  function add (components: any[] = []) {
-    return components.reduce(
-      (e: Entity, c) => e.add(c),
-      new Entity(entityManager.scheduleUpdate)
-    )
+  function create () {
+    return new Entity(entityManager.scheduleUpdate)
   }
 
   function emit (event: any) {

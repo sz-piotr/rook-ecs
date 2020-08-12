@@ -1,4 +1,5 @@
-import { Entity, ComponentClass, clearNotify } from './entity'
+import { Entity, clearNotify } from './entity'
+import { Component } from './component'
 import { Query, hasAll } from './query'
 
 export class EntityManager {
@@ -8,7 +9,7 @@ export class EntityManager {
     '': new Query(() => true, [])
   }
 
-  query = (...components: ComponentClass<any>[]): readonly Entity[] => {
+  query = (...components: Component<any>[]): readonly Entity[] => {
     const queryId = getQueryId(components)
     if (!this.queries[queryId]) {
       this.queries[queryId] = new Query(
@@ -19,7 +20,7 @@ export class EntityManager {
     return this.queries[queryId].entities
   }
 
-  queryOne = (...components: ComponentClass<any>[]): Entity | undefined => {
+  queryOne = (...components: Component<any>[]): Entity | undefined => {
     return this.query(...components)[0]
   }
 
@@ -38,6 +39,6 @@ export class EntityManager {
   }
 }
 
-function getQueryId (components: ComponentClass<any>[]) {
-  return components.map(component => component.type).sort().join('+')
+function getQueryId (components: Component<any>[]) {
+  return components.sort().join('+')
 }
