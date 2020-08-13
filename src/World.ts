@@ -2,6 +2,7 @@ import { Entity } from './Entity'
 import { Component } from './Component'
 import { EntityManager } from './EntityManager'
 import { System } from './System'
+import { PriorityQueue } from './PriorityQueue'
 
 export class World {
   private entityManager = new EntityManager()
@@ -10,7 +11,7 @@ export class World {
   ) {}
 
   private running = false
-  private events: any[] = []
+  private events = new PriorityQueue<any>()
 
   query (...components: Component<any>[]): readonly Entity[] {
     this.ensureRunning()
@@ -32,9 +33,9 @@ export class World {
     return this.entityManager.scheduleRemove(entity)
   }
 
-  emit (event: any) {
+  emit (event: any, priority = 0) {
     this.ensureRunning()
-    this.events.push(event)
+    this.events.enqueue(event, priority)
   }
 
   run (callback: () => void) {
@@ -45,8 +46,8 @@ export class World {
     this.running = true
     callback()
     this.entityManager.processUpdates()
-    while (this.events.length > 0) {
-      const event = this.events.shift()
+    while (!this.events.isEmpty()) {
+      const event = this.events.dequeue()
       for (const system of this.systems) {
         system(this, event)
         this.entityManager.processUpdates()
@@ -57,7 +58,7 @@ export class World {
 
   private ensureRunning () {
     if (!this.running) {
-      throw new Error('In an asynchronous context you need to wrap calls to world in world.run()')
+      throw new Error('Outside synchronous systems you need to wrap calls to world in world.run()')
     }
   }
 }

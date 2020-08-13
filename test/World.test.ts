@@ -43,6 +43,21 @@ describe('World', () => {
 
       expect(calls).to.equal(3)
     })
+
+    it('supports priority', () => {
+      const events: any[] = []
+
+      const eventLog = (world: World, event: any) => events.push(event)
+      const world = new World([eventLog])
+
+      world.run(() => {
+        world.emit('foo') // default priority = 0
+        world.emit('bar', 10)
+        world.emit('baz', 2)
+      })
+
+      expect(events).to.deep.equal(['bar', 'baz', 'foo'])
+    })
   })
 
   describe('query', () => {
