@@ -2,7 +2,8 @@ export class InitEvent {}
 
 export class UpdateTick {
   constructor (
-    readonly timestamp: number,
+    readonly realTime: number,
+    readonly time: number,
     readonly deltaTime: number
   ) {}
 }
