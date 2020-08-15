@@ -72,10 +72,10 @@ describe('World', () => {
 
       const world = new World([])
       world.run(() => {
-        world.create().add(A, 1).add(B, 2)
-        world.create().add(A, 3).add(B, 4)
-        world.create().add(A, 5)
-        world.create().add(B, 6)
+        world.create().set(A, 1).set(B, 2)
+        world.create().set(A, 3).set(B, 4)
+        world.create().set(A, 5)
+        world.create().set(B, 6)
         world.create()
 
         const entities = world.query(A, B)
@@ -100,8 +100,8 @@ describe('World', () => {
 
       const world = new World([])
       world.run(() => {
-        world.create().add(A, 1)
-        world.create().add(A, 3)
+        world.create().set(A, 1)
+        world.create().set(A, 3)
         world.create()
 
         expect(world.queryOne(A)).to.equal(undefined)
@@ -138,7 +138,7 @@ describe('World', () => {
       let entity: Entity
       world.run(() => { entity = world.create() })
       world.run(() => { world.remove(entity) })
-      world.run(() => { entity.add(A, 42) })
+      world.run(() => { entity.set(A, 42) })
       world.run(() => {
         expect(world.query()).to.deep.equal([])
       })

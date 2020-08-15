@@ -14,12 +14,12 @@ export class Entity {
     }
   }
 
-  add <T> (component: Component<T>, value: T): this {
-    if (this.has(component)) {
-      throw new Error('Component type already present.')
-    }
+  set <T> (component: Component<T>, value: T): this {
+    const shouldNotify = !this.has(component)
     this.components[component] = value
-    this.notify()
+    if (shouldNotify) {
+      this.notify()
+    }
     return this
   }
 

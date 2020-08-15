@@ -17,8 +17,8 @@ describe('EntityManager', () => {
     const em = new EntityManager()
 
     new Entity(em.scheduleUpdate)
-      .add(A, 1)
-      .add(B, 2)
+      .set(A, 1)
+      .set(B, 2)
 
     const entities = em.query(A, B)
     expect(entities).to.deep.equal([])
@@ -26,9 +26,9 @@ describe('EntityManager', () => {
 
   it('query returns matched entities after updates are processed', () => {
     const em = new EntityManager()
-    const entity1 = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
-    const entity2 = new Entity(em.scheduleUpdate).add(A, 3).add(B, 4)
-    new Entity(em.scheduleUpdate).add(A, 4)
+    const entity1 = new Entity(em.scheduleUpdate).set(A, 1).set(B, 2)
+    const entity2 = new Entity(em.scheduleUpdate).set(A, 3).set(B, 4)
+    new Entity(em.scheduleUpdate).set(A, 4)
 
     em.processUpdates()
     const entities = em.query(A, B)
@@ -38,7 +38,7 @@ describe('EntityManager', () => {
 
   it('query returns entities that have been changed after processUpdates', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
+    const entity = new Entity(em.scheduleUpdate).set(A, 1).set(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)
@@ -53,8 +53,8 @@ describe('EntityManager', () => {
 
   it('queryOne returns a single entity', () => {
     const em = new EntityManager()
-    const first = new Entity(em.scheduleUpdate).add(A, 1)
-    const second = new Entity(em.scheduleUpdate).add(B, 2)
+    const first = new Entity(em.scheduleUpdate).set(A, 1)
+    const second = new Entity(em.scheduleUpdate).set(B, 2)
 
     em.processUpdates()
     const result = em.queryOne(A)
@@ -70,7 +70,7 @@ describe('EntityManager', () => {
 
   it('processUpdates updates the entity array', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
+    const entity = new Entity(em.scheduleUpdate).set(A, 1).set(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)
@@ -86,7 +86,7 @@ describe('EntityManager', () => {
 
   it('processUpdates removes removed entities', () => {
     const em = new EntityManager()
-    const entity = new Entity(em.scheduleUpdate).add(A, 1).add(B, 2)
+    const entity = new Entity(em.scheduleUpdate).set(A, 1).set(B, 2)
 
     em.processUpdates()
     const before = em.query(A, B)

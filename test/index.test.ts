@@ -8,8 +8,8 @@ describe('index', () => {
 
     const init = Rook.system(Rook.InitEvent, (world, event) => {
       world.create()
-        .add(A, 42)
-        .add(B, 'foo')
+        .set(A, 42)
+        .set(B, 'foo')
     })
 
     const world = Rook.start([init])
