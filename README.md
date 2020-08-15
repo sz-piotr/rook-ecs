@@ -101,8 +101,8 @@ import { move } from './move'
 
 function init (world) {
   world.create()
-    .add(Position, { x: 0, y: 0 })
-    .add(Velocity, { x: 10, y: 20 })
+    .set(Position, { x: 0, y: 0 })
+    .set(Velocity, { x: 10, y: 20 })
 }
 
 start([
